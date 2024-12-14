@@ -114,6 +114,7 @@ namespace StreetFighterGame
             if (e.KeyCode == Keys.K) player1AttackK = true;
             if (e.KeyCode == Keys.L) player1AttackL = true;
             if (e.KeyCode == Keys.I) player1AttackI = true;
+            if (e.KeyCode == Keys.N) Console.WriteLine(logicGame.Player1.IsFacingLeft ? "left" : "Right");
 
             if (logicGame.Player2.isHit) return;
 
@@ -130,6 +131,7 @@ namespace StreetFighterGame
             if (e.KeyCode == Keys.NumPad2) player2AttackK = true;
             if (e.KeyCode == Keys.NumPad3) player2AttackL = true;
             if (e.KeyCode == Keys.NumPad5) player2AttackI = true;
+            if (e.KeyCode == Keys.M) Console.WriteLine(logicGame.Player2.IsFacingLeft ? "left" : "Right");
         }
 
         private void StreetFighterGame_Load_1(object sender, EventArgs e)
@@ -164,6 +166,7 @@ namespace StreetFighterGame
             // Cập nhật di chuyển cho Player 1
             if (player1MoveLeft)
             {
+                if (!logicGame.Player1.IsFacingLeft) logicGame.Player1.PositionX += logicGame.Player1.charWidth;
                 logicGame.Player1.MoveLeft();
                 logicGame.Player1.IsMovingLeft = true;
                 logicGame.Player1.IsFacingLeft = true;
@@ -171,6 +174,7 @@ namespace StreetFighterGame
 
             if (player1MoveRight)
             {
+                if (logicGame.Player1.IsFacingLeft) logicGame.Player1.PositionX -= logicGame.Player1.charWidth;
                 logicGame.Player1.MoveRight();
                 logicGame.Player1.IsMovingLeft = false;
                 logicGame.Player1.IsFacingLeft = false;
@@ -179,7 +183,11 @@ namespace StreetFighterGame
             // Chỉ cập nhật hướng đối mặt nếu cả hai người chơi không di chuyển
             if (!player1MoveLeft && !player1MoveRight)
             {
-                logicGame.Player1.IsFacingLeft = logicGame.Player1.PositionX > logicGame.Player2.PositionX;
+                if (!logicGame.Player1.IsFacingLeft && logicGame.Player1.PositionX > logicGame.Player2.PositionX)
+                {
+                    logicGame.Player1.IsFacingLeft = true;
+                    logicGame.Player1.PositionX += logicGame.Player1.charWidth;
+                }
             }
 
             // Các hành động khác cho Player 1
@@ -192,6 +200,7 @@ namespace StreetFighterGame
             // Cập nhật di chuyển cho Player 2
             if (player2MoveLeft)
             {
+                if (!logicGame.Player2.IsFacingLeft) logicGame.Player2.PositionX += logicGame.Player2.charWidth;
                 logicGame.Player2.MoveLeft();
                 logicGame.Player2.IsMovingLeft = true;
                 logicGame.Player2.IsFacingLeft = true;
@@ -199,6 +208,7 @@ namespace StreetFighterGame
 
             if (player2MoveRight)
             {
+                if (logicGame.Player2.IsFacingLeft) logicGame.Player2.PositionX -= logicGame.Player2.charWidth;
                 logicGame.Player2.MoveRight();
                 logicGame.Player2.IsMovingLeft = false;
                 logicGame.Player2.IsFacingLeft = false;
@@ -206,7 +216,10 @@ namespace StreetFighterGame
 
             if (!player2MoveLeft && !player2MoveRight)
             {
-                logicGame.Player2.IsFacingLeft = logicGame.Player2.PositionX > logicGame.Player1.PositionX;
+                if (!logicGame.Player2.IsFacingLeft && logicGame.Player2.PositionX > logicGame.Player1.PositionX) {
+                    logicGame.Player2.IsFacingLeft = true;
+                    logicGame.Player2.PositionX += logicGame.Player2.charWidth;
+                }
             }
 
             // Các hành động khác cho Player 2
@@ -233,7 +246,9 @@ namespace StreetFighterGame
             // Nếu cần flip, thực hiện flip
             if (shouldFlip)
             {
-                e.Graphics.TranslateTransform(character.PositionX + character.charWidth, 0);
+
+                character.IsFacingLeft = true;
+                e.Graphics.TranslateTransform(character.PositionX, 0);
                 e.Graphics.ScaleTransform(-1, 1); // Lật trên trục X
                 e.Graphics.DrawImage(character.CurrentImage, new Rectangle(0, character.PositionY, character.charWidth, character.charHeight));
             }

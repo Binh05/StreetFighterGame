@@ -14,6 +14,7 @@ namespace StreetFighterGame.GameEngine
             if (Player1.DangDanhDungKo() && KhoangCachX(Player1.PositionX, Player2.PositionX) < 150f)
             {
                 Player2.TruMau(Player1.Dame);
+                Player1.PositionX = Math.Min(Player1.PositionX + 2, 900);
                 Player2.PositionX = Math.Min(Player2.PositionX + 2, 900);
                 Player2.XuLiKhiBiDanh();
             }
