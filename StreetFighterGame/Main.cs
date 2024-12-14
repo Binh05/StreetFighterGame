@@ -195,10 +195,14 @@ namespace StreetFighterGame
             if (player1AttackJ) logicGame.Player1.Attack(attackType: ActionState.AttackingJ);
             if (player1AttackK) logicGame.Player1.Attack(attackType: ActionState.AttackingK);
             if (player1AttackL) logicGame.Player1.Attack(attackType: ActionState.AttackingL);
-            if (player1AttackI) logicGame.Player1.Attack(attackType: ActionState.AttackingI);
+            if (player1AttackI)
+            {
+                logicGame.Player1.Attack(attackType: ActionState.AttackingI);
+                logicGame.Player1.startDrawHitbox();
+            }
 
-            // Cập nhật di chuyển cho Player 2
-            if (player2MoveLeft)
+                // Cập nhật di chuyển cho Player 2
+                if (player2MoveLeft)
             {
                 if (!logicGame.Player2.IsFacingLeft) logicGame.Player2.PositionX += logicGame.Player2.charWidth;
                 logicGame.Player2.MoveLeft();
@@ -227,7 +231,11 @@ namespace StreetFighterGame
             if (player2AttackJ) logicGame.Player2.Attack(attackType: ActionState.AttackingJ);
             if (player2AttackK) logicGame.Player2.Attack(attackType: ActionState.AttackingK);
             if (player2AttackL) logicGame.Player2.Attack(attackType: ActionState.AttackingL);
-            if (player2AttackI) logicGame.Player2.Attack(attackType: ActionState.AttackingI);
+            if (player2AttackI)
+            {
+                logicGame.Player2.Attack(attackType: ActionState.AttackingI);
+                logicGame.Player2.startDrawHitbox();
+            }
         }
 
         private void DrawCharacter(PaintEventArgs e, Character character, bool flip)
@@ -260,7 +268,13 @@ namespace StreetFighterGame
             // Khôi phục trạng thái đồ họa
             e.Graphics.Restore(state);
         }
-
+        private void DrawHitbox(PaintEventArgs e, ActionState attackType, Character character, bool flip)
+        {
+            if (character.CurrentHitboxImage == null) return;
+            GraphicsState state = e.Graphics.Save();
+            e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.PositionX + character.charWidth, character.PositionY + (character.charHeight/2 - character.CurrentHitboxImage.Height) + character.CurrentHitboxImage.Height/2, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
+            e.Graphics.Restore(state);
+        }
 
 
         private void OnPaint(object sender, PaintEventArgs e)
@@ -302,16 +316,9 @@ namespace StreetFighterGame
                 };
                 DrawCharacter(e, logicGame.Player2, flip: true);  // Vẽ nhân vật Player2
             }
-
-            if (player1AttackK || player1AttackJ)
-            {
-                DrawHitbox(e);
-            }
-        }
-        private void DrawHitbox(PaintEventArgs e)
-        {
-            Graphics g = e.Graphics;
-            logicGame.Player1.mele(g);
+            
+            DrawHitbox(e, attackType: ActionState.AttackingI, logicGame.Player1, flip: false);
+            DrawHitbox(e, attackType: ActionState.AttackingI, logicGame.Player2, flip: false);
         }
         private void SetTextWinner(string nameWinner)
         {

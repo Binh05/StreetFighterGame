@@ -50,17 +50,23 @@ namespace StreetFighterGame.GameEngine
         public int BaseY { get; set; }
         public float ScaleFactor { get; set; }
         public Image CurrentImage { get; protected set; }
+        public Image CurrentHitboxImage { get; protected set; }
         public Image Avatar { get; set; }  // Ảnh đại diện cho nhân vật
         public int charWidth { get; set; }
         public int charHeight { get; set; }
+        public int hitboxWidth {  get; set; }
+        public int hitboxHeight { get; set; }
 
         protected Dictionary<ActionState, List<Image>> Animations { get; set; }
+        protected Dictionary<ActionState, List<Image>> HitboxAnimations { get; set; }
         public ActionState CurrentState { get; private set; } = ActionState.Standing;
 
         private int currentFrame = 0;
+        private int currentHitboxFrame = 0;
         private int frameDelay = 0;
         private int frameCounter = 0;
         private int lastFrameOfAttackAnimation;
+        private int lastFrameOfHitboxAnimation;
         private float jumpSpeed = 0f;
         private const float Gravity = 16f;
         private int DefendYOffset = 25;
@@ -72,47 +78,14 @@ namespace StreetFighterGame.GameEngine
         private Timer frameTimer; // Timer để thay đổi frame
         private int frameInterval = 100; // Khoảng thời gian giữa các frame (ms)
 
+        public Timer HitboxFrameTimer;
+
         private Timer hitTimer;
-        private int hitDuration = 500;
+        private int hitDuration = 100;
 
-        private List<Hitbox> hitboxes = new List<Hitbox>();
-        public void createHitbox()
-        {
-            int hitboxWidth = charWidth, hitboxHeight = 50, hitboxLifetime = 50;
-            
-            int hitboxX = IsFacingLeft ? PositionX - hitboxWidth : PositionX; // Tọa độ X dựa trên hướng
-            int hitboxY = PositionY + (int)(CurrentImage.Height / 3);
+        //private List<Hitbox> hitboxes = new List<Hitbox>();
 
-            // Tạo hitbox mới
-            Hitbox newHitbox = new Hitbox(hitboxX, hitboxY, hitboxWidth, hitboxHeight, hitboxLifetime);
-            hitboxes.Add(newHitbox);
-        }
-        public void Draw(Graphics g)
-        {
-            if (CurrentImage != null)
-            {
-                g.DrawImage(CurrentImage, PositionX, PositionY, CurrentImage.Width * ScaleFactor, CurrentImage.Height * ScaleFactor);
-            }
-        }
-        public void DrawHitbox(Graphics g)
-        {
-            foreach (var hitbox in hitboxes)
-            {
-                hitbox.Draw(g, isCircle: false); // Chọn vẽ hình tròn hoặc vuông
-            }
-        }
-        public void mele(Graphics g)
-        {
-            createHitbox(); // Tạo hitbox cho đòn tấn công
-            DrawHitbox(g);
-        }
-        public void Attack(ActionState attackType)
-        {
-            ChangeState(attackType);
-            isAttacking = true;
-            triggerAttack = true;
-        }
-        public string soundPath = ".\\sound\\PunchHit1.wav";
+        //public string soundPath = ".\\sound\\PunchHit1.wav";
         private SoundPlayer soundPlayer;
         protected Character(int startX, int startY, float scaleFactor, int mau, int d)
         {
@@ -121,19 +94,56 @@ namespace StreetFighterGame.GameEngine
             PositionY = startY;
             ScaleFactor = scaleFactor;
             Animations = new Dictionary<ActionState, List<Image>>();
+            HitboxAnimations = new Dictionary<ActionState, List<Image>>();
             isAttacking = isJumpping = isDefense = triggerAttack = isHit = false;
+            CurrentHitboxImage = null;
 
             frameTimer = new Timer { Interval = frameInterval };
             frameTimer.Tick += OnFrameTimerTick;
             frameTimer.Start();
 
+            HitboxFrameTimer = new Timer { Interval = 100 };
+            HitboxFrameTimer.Tick += OnHitboxFrameTimerTick;
+
             hitTimer = new Timer { Interval = hitDuration };
             hitTimer.Tick += OnHitTimerTick;
 
             SetChiSoSucManh(mau, d);
-            LoadHitSound();
+            //LoadHitSound();
         }
-        public void LoadHitSound()
+        public void createHitbox(ActionState attackType, Graphics g)
+        {
+            int hitboxLifetime = 100;
+            
+            int hitboxX = IsFacingLeft ? PositionX - charWidth : PositionX + charWidth; // Tọa độ X dựa trên hướng
+            int hitboxY = PositionY + (int)(CurrentImage.Height / 2);
+
+            List<Image> hitboxAnimations = HitboxAnimations.ContainsKey(attackType) ? HitboxAnimations[attackType] : null;
+
+            // Tạo hitbox mới
+            Hitbox hitbox = new Hitbox(hitboxX, hitboxY, hitboxLifetime, hitboxAnimations);
+            hitbox.Draw(g);
+        }
+        public void Draw(Graphics g)
+        {
+            if (CurrentImage != null)
+            {
+                g.DrawImage(CurrentImage, PositionX, PositionY, CurrentImage.Width * ScaleFactor, CurrentImage.Height * ScaleFactor);
+            }
+        }
+        public void Attack(ActionState attackType)
+        {
+            ChangeState(attackType);
+            isAttacking = true;
+            triggerAttack = true;
+        }
+        public bool DangDanhDungKo()
+        {
+            bool b = isAttacking && triggerAttack;
+            triggerAttack = false;
+            return b;
+        }
+        public void LoadHitSound(string soundPath)
         {
             string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, soundPath);
             if (File.Exists(fullPath))
@@ -166,38 +176,37 @@ namespace StreetFighterGame.GameEngine
                 }
             }
         }
+        private void OnHitboxFrameTimerTick(object sender, EventArgs e)
+        {
+            if (HitboxAnimations.ContainsKey(ActionState.AttackingI) && HitboxAnimations[ActionState.AttackingI].Count > 0)
+            {
+                var frames = HitboxAnimations[ActionState.AttackingI];
+                currentHitboxFrame = (currentHitboxFrame + 1) % frames.Count;
+                CurrentHitboxImage = frames[currentHitboxFrame];
+
+                if (currentHitboxFrame == lastFrameOfHitboxAnimation)
+                {
+                    CurrentHitboxImage = null;
+                    currentHitboxFrame = 0;
+                    lastFrameOfHitboxAnimation = 0;
+                    HitboxFrameTimer.Stop();
+                }
+            }
+        } 
+        public void startDrawHitbox()
+        {
+            
+            CurrentHitboxImage = HitboxAnimations[ActionState.AttackingI][0];
+            lastFrameOfHitboxAnimation = HitboxAnimations[ActionState.AttackingI].Count - 1; // lấy frame để kiểm tra tấn công
+            
+            HitboxFrameTimer.Start();
+        }
         private void OnHitTimerTick(object sender, EventArgs e)
         {
 
             isHit = false;
             ChangeState(ActionState.Standing);
             hitTimer.Stop();
-        }
-        public float PhanTramMauHienTai()
-        {
-            return cssm.mauHienTai / cssm.mauToiDa;
-        }
-        public float PhanTramNangLuongHienTai()
-        {
-
-            //Console.WriteLine(cssm.nangLuongHienTai / cssm.nangLuonToiDa);
-            return (float)(cssm.nangLuongHienTai) / (float)(cssm.nangLuonToiDa);
-        }
-        public void SetChiSoSucManh(int mau, int d)
-        {
-            cssm = new ChiSoSucManh(mau, d);
-        }
-        public void TruMau(float dame)
-        {
-            Console.WriteLine(dame);
-            Console.WriteLine(cssm.mauHienTai);
-            Console.WriteLine(cssm.mauToiDa);
-            Console.WriteLine(cssm.mauHienTai / cssm.mauToiDa);
-            cssm.mauHienTai -= dame;
-        }
-        public float Dame
-        {
-            get { return cssm.dame; }
         }
         protected void LoadAnimations(string folderPath, Dictionary<ActionState, string> stateToPrefix, Dictionary<ActionState, int> stateToFrameCount)
         {
@@ -213,7 +222,14 @@ namespace StreetFighterGame.GameEngine
                 CurrentImage = Animations[ActionState.Standing][0];
             }
         }
-
+        protected void LoadHitboxAnimations(string folderPath, Dictionary<ActionState, string> statetoPrefix, Dictionary<ActionState, int> statetoFrameCounr)
+        {
+            foreach (var state in statetoPrefix)
+            {
+                int frameCount = statetoFrameCounr.ContainsKey(state.Key) ? statetoFrameCounr[state.Key] : 1;
+                HitboxAnimations[state.Key] = LoadImages(folderPath, frameCount, state.Value);
+            }
+        }
         private List<Image> LoadImages(string folderPath, int count, string filePrefix)
         {
             var images = new List<Image>();
@@ -227,22 +243,12 @@ namespace StreetFighterGame.GameEngine
             }
             return images;
         }
-
         public virtual void Update()
         {
             charWidth = (int)(CurrentImage.Width * ScaleFactor);
             charHeight = (int)(CurrentImage.Height * ScaleFactor);
             if (isHit) return;
             if (isJumpping) HandleJumping();
-            hitboxes.RemoveAll(h => !h.isActive); // Xóa hitbox đã hết thời gian tồn tại
-
-            // UpdateFrame();
-        }
-        public bool DangDanhDungKo()
-        {
-            bool b = isAttacking && triggerAttack;
-            triggerAttack = false;
-            return b;
         }
         public void XuLiKhiBiDanh()
         {
@@ -281,7 +287,6 @@ namespace StreetFighterGame.GameEngine
             }
 
         }*/
-
         private void HandleJumping()
         {
             PositionY -= (int)jumpSpeed;
@@ -295,11 +300,11 @@ namespace StreetFighterGame.GameEngine
                 ChangeState(ActionState.Standing);
             }
         }
-
         public void ChangeState(ActionState newState)
         {
             if (CurrentState == newState || isAttacking || isHit) return;
 
+            
             CurrentState = newState;
             frameDelay = newState == ActionState.WalkingFront || newState == ActionState.WalkingBack ? 1 : 1;
             currentFrame = 0;
@@ -352,7 +357,6 @@ namespace StreetFighterGame.GameEngine
             if (IsOnGround()) ChangeState(ActionState.WalkingFront);
             PositionX = Math.Min(PositionX + 15, 900);  // Kiểm tra vị trí để tránh đi ra ngoài
         }
-
         public void MoveLeft()
         {
             if (isDefense) return;
@@ -366,7 +370,6 @@ namespace StreetFighterGame.GameEngine
                 ChangeState(ActionState.Standing);
             }
         }
-
         public void Jump()
         {
             if (IsOnGround()) // Kiểm tra nếu đang ở mặt đất
@@ -394,8 +397,6 @@ namespace StreetFighterGame.GameEngine
                 isDefense = false;
             }
         }
-
-
         public void StopAttacking()
         {
             if (!isAttacking) ChangeState(ActionState.Standing);
@@ -420,6 +421,31 @@ namespace StreetFighterGame.GameEngine
                 }
             }
         }
+        public float PhanTramMauHienTai()
+        {
+            return cssm.mauHienTai / cssm.mauToiDa;
+        }
+        public float PhanTramNangLuongHienTai()
+        {
 
+            //Console.WriteLine(cssm.nangLuongHienTai / cssm.nangLuonToiDa);
+            return (float)(cssm.nangLuongHienTai) / (float)(cssm.nangLuonToiDa);
+        }
+        public void SetChiSoSucManh(int mau, int d)
+        {
+            cssm = new ChiSoSucManh(mau, d);
+        }
+        public void TruMau(float dame)
+        {
+            Console.WriteLine(dame);
+            Console.WriteLine(cssm.mauHienTai);
+            Console.WriteLine(cssm.mauToiDa);
+            Console.WriteLine(cssm.mauHienTai / cssm.mauToiDa);
+            cssm.mauHienTai -= dame;
+        }
+        public float Dame
+        {
+            get { return cssm.dame; }
+        }
     }
 }

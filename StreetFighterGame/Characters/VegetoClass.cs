@@ -35,8 +35,18 @@ namespace StreetFighterGame.Characters
                 { ActionState.AttackingI, 6 },        // 4 khung hình cho AttackingI
                 { ActionState.hit, 1 }
             });
+
+            LoadHitboxAnimations(".\\Vegeto", new Dictionary<ActionState, string>
+            {
+                { ActionState.AttackingI, "Vegeto_1000" }
+            }, new Dictionary<ActionState, int>
+            {
+                { ActionState.AttackingI, 22 }
+            });
+
             Name = "Vegeto";
             LoadAvatar(".\\Vegeto\\Vegeto_9000-5.png");
+            LoadHitSound(".\\sound\\PunchHit1.wav");
         }
 
         //public override void Attack(ActionState attackType)

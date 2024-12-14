@@ -19,8 +19,8 @@ namespace StreetFighterGame.Characters
                 { ActionState.Jumping, "GokuMUI_40" },
                 { ActionState.AttackingJ, "GokuMUI_201" },
                 { ActionState.AttackingK, "GokuMUI_202" },
-                { ActionState.AttackingL, "GokuMUI_203" },
-                { ActionState.AttackingI, "GokuMUI_205" },
+                { ActionState.AttackingL, "GokuMUI_205" },
+                { ActionState.AttackingI, "GokuMUI_203" },
                 { ActionState.hit, "GokuMUI_5001" }
             }, new Dictionary<ActionState, int>
             {
@@ -31,10 +31,19 @@ namespace StreetFighterGame.Characters
                 { ActionState.Jumping, 1 },         // 10 khung hình cho Jumping
                 { ActionState.AttackingJ, 15 },       // 3 khung hình cho AttackingJ
                 { ActionState.AttackingK, 8 },      // 17 khung hình cho AttackingK
-                { ActionState.AttackingL, 6 },       // 4 khung hình cho AttackingL
-                { ActionState.AttackingI, 9 },        // 4 khung hình cho AttackingI
+                { ActionState.AttackingL, 9 },       // 4 khung hình cho AttackingL
+                { ActionState.AttackingI, 6 },        // 4 khung hình cho AttackingI
                 { ActionState.hit, 1 }
             });
+
+            LoadHitboxAnimations(".\\GokuMUI", new Dictionary<ActionState, string>
+            {
+                { ActionState.AttackingI, "GokuMUI_1010" }
+            }, new Dictionary<ActionState, int>
+            {
+                { ActionState.AttackingI, 10 }
+            });
+
             Name = "Goku";
             LoadAvatar(".\\GokuMUI\\GokuMUI_9000-1.png");
         }

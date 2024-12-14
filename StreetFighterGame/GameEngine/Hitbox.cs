@@ -17,21 +17,21 @@ namespace StreetFighterGame.GameEngine
         public int Height { get; set; }
         public bool isActive { get; private set; }
         public int Lifetime { get; private set; }
+        public List<Image> HitboxImage { get; private set; }
 
         private Timer LifetimeTimer;
-
-        public Hitbox(int positionX, int positionY, int width, int height, int lifetime)
+        public Hitbox(int positionX, int positionY, int lifetime, List<Image> hitboxImage)
         {
             PositionX = positionX;
             PositionY = positionY;
-            Width = width;
-            Height = height;
             Lifetime = lifetime;
             isActive = true;
+            HitboxImage = hitboxImage;
 
             LifetimeTimer = new Timer { Interval = lifetime };
             LifetimeTimer.Tick += (sender, e) => { isActive = false; LifetimeTimer.Stop(); };
             LifetimeTimer.Start();
+            
         }
         public void Draw(Graphics g, bool isCircle = false)
         {
@@ -50,5 +50,6 @@ namespace StreetFighterGame.GameEngine
                 /*g.FillRectangle(Brushes.Red, PositionX, PositionY, Width, Height);*/
             }
         }
+        
     }
 }
