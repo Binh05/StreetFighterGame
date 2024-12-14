@@ -7,7 +7,7 @@ namespace StreetFighterGame.Characters
 {
     public class Vegeto : Character
     {
-        public Vegeto(int startX, int startY, float scaleFactor) : base(startX, startY, scaleFactor, 750, 40)
+        public Vegeto(int startX, int startY, float scaleFactor) : base(startX, startY, scaleFactor, 750, 1)
         {
             // Tải hoạt ảnh cho Goku với ActionState
             LoadAnimations(".\\Vegeto", new Dictionary<ActionState, string>
@@ -20,7 +20,8 @@ namespace StreetFighterGame.Characters
                 { ActionState.AttackingJ, "Vegeto_201" },
                 { ActionState.AttackingK, "Vegeto_202" },
                 { ActionState.AttackingL, "Vegeto_203" },
-                { ActionState.AttackingI, "Vegeto_204" }
+                { ActionState.AttackingI, "Vegeto_204" },
+                { ActionState.hit, "Vegeto_220" }
             }, new Dictionary<ActionState, int>
             {
                 { ActionState.Standing, 8 },         // 4 khung hình cho Standing
@@ -31,7 +32,8 @@ namespace StreetFighterGame.Characters
                 { ActionState.AttackingJ, 9 },       // 3 khung hình cho AttackingJ
                 { ActionState.AttackingK, 7 },      // 17 khung hình cho AttackingK
                 { ActionState.AttackingL, 7 },       // 4 khung hình cho AttackingL
-                { ActionState.AttackingI, 6 }        // 4 khung hình cho AttackingI
+                { ActionState.AttackingI, 6 },        // 4 khung hình cho AttackingI
+                { ActionState.hit, 1 }
             });
             Name = "Vegeto";
             LoadAvatar(".\\Vegeto\\Vegeto_9000-5.png");

@@ -43,7 +43,6 @@ namespace StreetFighterGame.GameEngine
             }
             else
             {
-                Console.WriteLine("draw hitbox");
                 using (SolidBrush redBrush = new SolidBrush(Color.Red))
                 {
                     g.FillRectangle(redBrush, PositionX, PositionY, Width, Height); // Tô đầy hitbox

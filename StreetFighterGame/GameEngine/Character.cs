@@ -76,18 +76,11 @@ namespace StreetFighterGame.GameEngine
         private int hitDuration = 500;
 
         private List<Hitbox> hitboxes = new List<Hitbox>();
-        public void createHitbox(ActionState attackType)
+        public void createHitbox()
         {
-            int hitboxWidth = 0, hitboxHeight = 0, hitboxLifetime = 50;
-            switch (attackType)
-            {
-                case ActionState.AttackingK:
-                    hitboxWidth = 100;
-                    hitboxHeight = 50;
-                    hitboxLifetime = 50;
-                    break;
-            }
-            int hitboxX = IsFacingLeft ? PositionX - hitboxWidth : PositionX + 50; // Tọa độ X dựa trên hướng
+            int hitboxWidth = charWidth, hitboxHeight = 50, hitboxLifetime = 50;
+            
+            int hitboxX = IsFacingLeft ? PositionX - hitboxWidth : PositionX; // Tọa độ X dựa trên hướng
             int hitboxY = PositionY + (int)(CurrentImage.Height / 3);
 
             // Tạo hitbox mới
@@ -110,7 +103,7 @@ namespace StreetFighterGame.GameEngine
         }
         public void mele(Graphics g)
         {
-            createHitbox(CurrentState); // Tạo hitbox cho đòn tấn công
+            createHitbox(); // Tạo hitbox cho đòn tấn công
             DrawHitbox(g);
         }
         public void Attack(ActionState attackType)
@@ -119,7 +112,7 @@ namespace StreetFighterGame.GameEngine
             isAttacking = true;
             triggerAttack = true;
         }
-
+        public string soundPath = ".\\sound\\PunchHit1.wav";
         private SoundPlayer soundPlayer;
         protected Character(int startX, int startY, float scaleFactor, int mau, int d)
         {
@@ -138,7 +131,23 @@ namespace StreetFighterGame.GameEngine
             hitTimer.Tick += OnHitTimerTick;
 
             SetChiSoSucManh(mau, d);
-            LoadHitSound(".\\PunchHit1");
+            LoadHitSound();
+        }
+        public void LoadHitSound()
+        {
+            string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, soundPath);
+            if (File.Exists(fullPath))
+            {
+                soundPlayer = new SoundPlayer(fullPath);
+            }
+            else
+            {
+                Console.WriteLine("Sound file not found: " + fullPath);
+            }
+        }
+        public void PlayHitSound()
+        {
+            soundPlayer?.Play(); // Phát âm thanh nếu đã nạp
         }
         private void OnFrameTimerTick(object sender, EventArgs e)
         {
@@ -163,22 +172,6 @@ namespace StreetFighterGame.GameEngine
             isHit = false;
             ChangeState(ActionState.Standing);
             hitTimer.Stop();
-        }
-        protected void LoadHitSound(string soundPath)
-        {
-            string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, soundPath);
-            if (File.Exists(fullPath))
-            {
-                soundPlayer = new SoundPlayer(fullPath);
-            }
-            else
-            {
-                Console.WriteLine("Sound file not found: " + fullPath);
-            }
-        }
-        public void PlayHitSound()
-        {
-            soundPlayer?.Play(); // Phát âm thanh nếu đã nạp
         }
         public float PhanTramMauHienTai()
         {
@@ -255,7 +248,6 @@ namespace StreetFighterGame.GameEngine
         {
             if (cssm.mauHienTai <= 0) return;
 
-            PlayHitSound(); // Phát âm thanh khi bị đánh
             ChangeState(ActionState.hit); // Chuyển trạng thái sang Hit
 
             // Bắt đầu đếm ngược 1 giây

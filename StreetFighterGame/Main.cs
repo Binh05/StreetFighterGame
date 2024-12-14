@@ -114,7 +114,7 @@ namespace StreetFighterGame
             if (e.KeyCode == Keys.K) player1AttackK = true;
             if (e.KeyCode == Keys.L) player1AttackL = true;
             if (e.KeyCode == Keys.I) player1AttackI = true;
-            if (e.KeyCode == Keys.N) Console.WriteLine(logicGame.Player1.IsFacingLeft ? "left" : "Right");
+            if (e.KeyCode == Keys.N) logicGame.Player1.PlayHitSound();
 
             if (logicGame.Player2.isHit) return;
 
@@ -303,7 +303,7 @@ namespace StreetFighterGame
                 DrawCharacter(e, logicGame.Player2, flip: true);  // Vẽ nhân vật Player2
             }
 
-            if (player1AttackK)
+            if (player1AttackK || player1AttackJ)
             {
                 DrawHitbox(e);
             }
