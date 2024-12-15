@@ -17,7 +17,7 @@ namespace StreetFighterGame.GameEngine
             {
                 Player1.PlayHitSound();
                 Player2.TruMau(Player1.Dame);
-                Player1.PositionX = Math.Min(Player1.PositionX + lech1, 900);
+                
                 Player2.PositionX = Math.Min(Player2.PositionX + lech1, 900);
                 Player2.XuLiKhiBiDanh();
             }
@@ -25,7 +25,7 @@ namespace StreetFighterGame.GameEngine
             {
                 Player1.TruMau(Player2.Dame);
                 Player1.PositionX = Math.Min(Player1.PositionX + lech2, 900);
-                Player2.PositionX = Math.Min(Player2.PositionX + lech2, 900);
+                
                 Player1.XuLiKhiBiDanh();
             }
         }

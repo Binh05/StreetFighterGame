@@ -20,13 +20,16 @@ namespace StreetFighterGame
         private Dictionary<string, Image> characterImages;
         private List<string> mapPaths;
         private int currentInDexMapSelect;
+        private Dictionary<string, List<Image>> characterAnimations;
+        private Timer animationTimer;
+        private int currentFrameChar1, currentFrameChar2;
         public ChonNhanVat()
         {
             InitializeComponent();
             buttonFight.Visible = true;
             labelName.Visible = false;
             pictureBoxMap.Visible = false;
-            buttonNextMap.Visible = buttonPreMap.Visible =false;
+            buttonNextMap.Visible = buttonPreMap.Visible = false;
             this.Controls.Add(pictureBoxMap);
             // Lấy kích thước của Form và pictureBoxMap
             int x = (this.ClientSize.Width - pictureBoxMap.Width) / 2;
@@ -46,8 +49,10 @@ namespace StreetFighterGame
         }
         private void InitializeCharacterImages()
         {
-            characterImages = new Dictionary<string, Image>();
+            characterAnimations = new Dictionary<string, List<Image>>();
+            characterImages = new Dictionary<string, Image>(); // Khởi tạo dictionary
 
+            // Nạp hình ảnh tĩnh cho từng nhân vật
             characterImages["chunli"] = Image.FromFile(".\\Chunli\\ChunLi_0-0.png");
             characterImages["goku"] = Image.FromFile(".\\GokuMUI\\GokuMUI_0-0.png");
             characterImages["kyo"] = Image.FromFile(".\\Kyo\\Kyo_0-0.png");
@@ -55,9 +60,58 @@ namespace StreetFighterGame
             characterImages["ryu"] = Image.FromFile(".\\Ryu\\Ryu_0-0.png");
             characterImages["vegeto"] = Image.FromFile(".\\Vegeto\\Vegeto_0-0.png");
             characterImages["zenitsu"] = Image.FromFile(".\\Zenitsu\\Zenitsu_0-1.png");
+
+
+            // Load các khung hình cho từng nhân vật
+            characterAnimations["chunli"] = LoadAnimationFrames(".\\Chunli\\", "ChunLi_0-{0}.png", 4);
+            characterAnimations["goku"] = LoadAnimationFrames(".\\GokuMUI\\", "GokuMUI_0-{0}.png", 3);
+            characterAnimations["kyo"] = LoadAnimationFrames(".\\Kyo\\", "Kyo_0-{0}.png", 4);
+            characterAnimations["king"] = LoadAnimationFrames(".\\King\\", "King_0-{0}.png", 5);
+            characterAnimations["ryu"] = LoadAnimationFrames(".\\Ryu\\", "Ryu_0-{0}.png", 5);
+            characterAnimations["vegeto"] = LoadAnimationFrames(".\\Vegeto\\", "Vegeto_0-{0}.png", 6);
+            characterAnimations["zenitsu"] = LoadAnimationFrames(".\\Zenitsu\\", "Zenitsu_0-{0}.png", 5);
+
             pictureBoxChar1.Visible = pictureBoxChar2.Visible = false;
 
+            // Initialize Timer
+            animationTimer = new Timer();
+            animationTimer.Interval = 100; // Đổi ảnh mỗi 100ms
+            animationTimer.Tick += AnimationTimer_Tick;
+            animationTimer.Start();
         }
+
+        // Hàm hỗ trợ để load các khung hình
+        private List<Image> LoadAnimationFrames(string folderPath, string filePattern, int frameCount)
+        {
+            var frames = new List<Image>();
+            for (int i = 0; i < frameCount; i++)
+            {
+                string filePath = Path.Combine(folderPath, string.Format(filePattern, i));
+                if (File.Exists(filePath))
+                {
+                    frames.Add(Image.FromFile(filePath));
+                }
+            }
+            return frames;
+        }
+
+        private void AnimationTimer_Tick(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(tenNhanVatDuocChon1) && characterAnimations.ContainsKey(tenNhanVatDuocChon1.ToLower()))
+            {
+                var frames = characterAnimations[tenNhanVatDuocChon1.ToLower()];
+                pictureBoxChar1.BackgroundImage = frames[currentFrameChar1];
+                currentFrameChar1 = (currentFrameChar1 + 1) % frames.Count; // Lặp lại khung hình
+            }
+
+            if (!string.IsNullOrEmpty(tenNhanVatDuocChon2) && characterAnimations.ContainsKey(tenNhanVatDuocChon2.ToLower()))
+            {
+                var frames = characterAnimations[tenNhanVatDuocChon2.ToLower()];
+                pictureBoxChar2.BackgroundImage = frames[currentFrameChar2];
+                currentFrameChar2 = (currentFrameChar2 + 1) % frames.Count; // Lặp lại khung hình
+            }
+        }
+
         public void buttonFight_Click(object sender, EventArgs e)
         {
             // Kiểm tra số lần chọn nhân vật
@@ -65,7 +119,7 @@ namespace StreetFighterGame
             {
                 buttonFight.Text = "Start"; // Đổi chữ của button khi đã chọn đủ 2 nhân vật
                 panel1.Visible = false;
-                labelName.Visible =false;
+                labelName.Visible = false;
                 //
                 pictureBoxMap.Visible = true;
                 buttonNextMap.Visible = buttonPreMap.Visible = true;
@@ -167,12 +221,6 @@ namespace StreetFighterGame
             labelName.Visible = true;
             labelName.Text = nameNV;
             buttonFight.Visible = true;
-        }
-        private void LoadCharacterImage(string characterName)
-        {
-            if (characterImages.ContainsKey(characterName.ToLower()))
-            {
-            }
         }
         private void pictureBox1_Click(object sender, EventArgs e)
         {

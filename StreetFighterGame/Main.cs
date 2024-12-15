@@ -98,25 +98,26 @@ namespace StreetFighterGame
         }
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (logicGame.Player1.isHit) return;
-
             // Handle key down events for Player 1
-            if (e.KeyCode == Keys.A) player1MoveLeft = true;
-            if (e.KeyCode == Keys.D)
+            if (!logicGame.Player1.isHit && !logicGame.Player1.DangDanhDungKo())
             {
-                player1MoveRight = true;
-                if (player1MoveLeft) player1MoveLeft = false;// đảm bảo chỉ có 1 move là true, vì khi 2 true sẽ gặp bug logic vì có 2state được change
+                if (e.KeyCode == Keys.A) player1MoveLeft = true;
+                if (e.KeyCode == Keys.D)
+                {
+                    player1MoveRight = true;
+                    if (player1MoveLeft) player1MoveLeft = false;// đảm bảo chỉ có 1 move là true, vì khi 2 true sẽ gặp bug logic vì có 2state được change
+                }
+
+                if (e.KeyCode == Keys.W) player1Jump = true;
+                if (e.KeyCode == Keys.S) logicGame.Player1.Defend(true);
+                if (e.KeyCode == Keys.J) player1AttackJ = true;
+                if (e.KeyCode == Keys.K) player1AttackK = true;
+                if (e.KeyCode == Keys.L) player1AttackL = true;
+                if (e.KeyCode == Keys.I) player1AttackI = true;
+                if (e.KeyCode == Keys.N) logicGame.Player1.PlayHitSound();
             }
 
-            if (e.KeyCode == Keys.W) player1Jump = true;
-            if (e.KeyCode == Keys.S) logicGame.Player1.Defend(true);
-            if (e.KeyCode == Keys.J) player1AttackJ = true;
-            if (e.KeyCode == Keys.K) player1AttackK = true;
-            if (e.KeyCode == Keys.L) player1AttackL = true;
-            if (e.KeyCode == Keys.I) player1AttackI = true;
-            if (e.KeyCode == Keys.N) logicGame.Player1.PlayHitSound();
-
-            if (logicGame.Player2.isHit) return;
+            if (logicGame.Player2.isHit || logicGame.Player2.DangDanhDungKo()) return;
 
             // Handle key down events for Player 2
             if (e.KeyCode == Keys.Left) player2MoveLeft = true;
@@ -142,8 +143,8 @@ namespace StreetFighterGame
         private void OnKeyUp(object sender, KeyEventArgs e)
         {
             // Handle key up events for Player 1
-            if (e.KeyCode == Keys.A) player1MoveLeft = false; logicGame.Player1.StopMoving();
-            if (e.KeyCode == Keys.D) player1MoveRight = false; logicGame.Player1.StopMoving();
+            if (e.KeyCode == Keys.A || logicGame.Player1.DangDanhDungKo()) player1MoveLeft = false; logicGame.Player1.StopMoving();
+            if (e.KeyCode == Keys.D || logicGame.Player1.DangDanhDungKo()) player1MoveRight = false; logicGame.Player1.StopMoving();
             if (e.KeyCode == Keys.W) player1Jump = false;
             if (e.KeyCode == Keys.S) logicGame.Player1.Defend(false);
             if (e.KeyCode == Keys.J) player1AttackJ = false;
@@ -151,8 +152,8 @@ namespace StreetFighterGame
             if (e.KeyCode == Keys.L) player1AttackL = false;
             if (e.KeyCode == Keys.I) player1AttackI = false;
             // Handle key up events for Player 2
-            if (e.KeyCode == Keys.Left) player2MoveLeft = false; logicGame.Player2.StopMoving();
-            if (e.KeyCode == Keys.Right) player2MoveRight = false; logicGame.Player2.StopMoving();
+            if (e.KeyCode == Keys.Left || logicGame.Player2.DangDanhDungKo()) player2MoveLeft = false; logicGame.Player2.StopMoving();
+            if (e.KeyCode == Keys.Right || logicGame.Player2.DangDanhDungKo()) player2MoveRight = false; logicGame.Player2.StopMoving();
             if (e.KeyCode == Keys.Up) player2Jump = false;
             if (e.KeyCode == Keys.Down) logicGame.Player2.Defend(false);
             if (e.KeyCode == Keys.NumPad1) player2AttackJ = false;
@@ -270,7 +271,7 @@ namespace StreetFighterGame
         }
         private void DrawHitbox(PaintEventArgs e, ActionState attackType, Character character, bool flip)
         {
-            if (character.CurrentHitboxImage == null) return;
+            
 
             GraphicsState state = e.Graphics.Save();
             if (character.IsFacingLeft)
@@ -280,18 +281,29 @@ namespace StreetFighterGame
                 using (SolidBrush redBrush = new SolidBrush(Color.Red))
                 {
                     Graphics g = e.Graphics;
-                    g.FillRectangle(redBrush, character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height) + character.CurrentHitboxImage.Height / 2, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)); // Tô đầy hitbox
+                    g.FillRectangle(redBrush, character.charWidth, character.PositionY + (character.charHeight / 2 - 50), character.charWidth, 100); // Tô đầy hitbox
                 }
                 e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height) + character.CurrentHitboxImage.Height / 2, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
             }
             else
             {
-                using (SolidBrush redBrush = new SolidBrush(Color.Red))
+                if (character.CurrentHitboxImage == null)
                 {
-                    Graphics g = e.Graphics;
-                    g.FillRectangle(redBrush, character.PositionX + character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height) + character.CurrentHitboxImage.Height / 2, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)); // Tô đầy hitbox
+                    using (SolidBrush redBrush = new SolidBrush(Color.Red))
+                    {
+                        Graphics g = e.Graphics;
+                        g.FillRectangle(redBrush, character.PositionX, character.PositionY + (character.charHeight / 2 - 50), character.charWidth, 100); // Tô đầy hitbox
+                    }
                 }
-                e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.PositionX + character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height) + character.CurrentHitboxImage.Height / 2, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
+                else
+                {
+                    using (SolidBrush redBrush = new SolidBrush(Color.Red))
+                    {
+                        Graphics g = e.Graphics;
+                        g.FillRectangle(redBrush, character.PositionX + character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height / 2), (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)); // Tô đầy hitbox
+                    }
+                    e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.PositionX + character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height / 2), (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
+                }
             }
             e.Graphics.Restore(state);
         }
@@ -337,8 +349,8 @@ namespace StreetFighterGame
                 DrawCharacter(e, logicGame.Player2, flip: true);  // Vẽ nhân vật Player2
             }
             
-            DrawHitbox(e, attackType: ActionState.AttackingI, logicGame.Player1, flip: false);
-            DrawHitbox(e, attackType: ActionState.AttackingI, logicGame.Player2, flip: false);
+            if (logicGame.Player1.DangDanhDungKo()) DrawHitbox(e, attackType: ActionState.AttackingI, logicGame.Player1, flip: false);
+            if (logicGame.Player2.DangDanhDungKo())  DrawHitbox(e, attackType: ActionState.AttackingI, logicGame.Player2, flip: false);
         }
         private void SetTextWinner(string nameWinner)
         {

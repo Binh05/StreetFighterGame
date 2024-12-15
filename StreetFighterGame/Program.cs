@@ -16,7 +16,12 @@ namespace StreetFighterGame
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormLogincs());
+            Application.Run(CreateCenteredForm(new FormLogincs()));
+        }
+        private static Form CreateCenteredForm(Form form)
+        {
+            form.StartPosition = FormStartPosition.CenterScreen;
+            return form;
         }
     }
 }

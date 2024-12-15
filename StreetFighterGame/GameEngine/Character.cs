@@ -131,18 +131,6 @@ namespace StreetFighterGame.GameEngine
                 g.DrawImage(CurrentImage, PositionX, PositionY, CurrentImage.Width * ScaleFactor, CurrentImage.Height * ScaleFactor);
             }
         }
-        public void Attack(ActionState attackType)
-        {
-            ChangeState(attackType);
-            isAttacking = true;
-            triggerAttack = true;
-        }
-        public bool DangDanhDungKo()
-        {
-            bool b = isAttacking && triggerAttack;
-            triggerAttack = false;
-            return b;
-        }
         public void LoadHitSound(string soundPath)
         {
             string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, soundPath);
@@ -169,9 +157,10 @@ namespace StreetFighterGame.GameEngine
                 CurrentImage = frames[currentFrame];
 
                 // Nếu là trạng thái tấn công, kiểm tra nếu đến frame cuối thì ngừng tấn công
-                if (IsAttackAction(CurrentState) && currentFrame == lastFrameOfAttackAnimation)
+                if (IsAttackAction(CurrentState) && currentFrame == lastFrameOfAttackAnimation && currentHitboxFrame == lastFrameOfHitboxAnimation)
                 {
                     isAttacking = triggerAttack = false;
+                    CurrentHitboxImage = null;
                     StopAttacking();
                 }
             }
@@ -186,7 +175,7 @@ namespace StreetFighterGame.GameEngine
 
                 if (currentHitboxFrame == lastFrameOfHitboxAnimation)
                 {
-                    CurrentHitboxImage = null;
+                    
                     currentHitboxFrame = 0;
                     lastFrameOfHitboxAnimation = 0;
                     HitboxFrameTimer.Stop();
@@ -250,6 +239,19 @@ namespace StreetFighterGame.GameEngine
             if (isHit) return;
             if (isJumpping) HandleJumping();
         }
+        public void Attack(ActionState attackType)
+        {
+            ChangeState(attackType);
+            PositionX = Math.Min(PositionX + (IsFacingLeft ? -2 : 2), 900);
+            isAttacking = true;
+            triggerAttack = true;
+        }
+        public bool DangDanhDungKo()
+        {
+            bool b = isAttacking && triggerAttack;
+            //triggerAttack = false;
+            return b;
+        }
         public void XuLiKhiBiDanh()
         {
             if (cssm.mauHienTai <= 0) return;
@@ -259,6 +261,51 @@ namespace StreetFighterGame.GameEngine
             // Bắt đầu đếm ngược 1 giây
             hitTimer.Start();
             isHit = true;
+        }
+        public void ChangeState(ActionState newState)
+        {
+            if (CurrentState == newState || DangDanhDungKo() || isHit) return;
+
+
+            CurrentState = newState;
+            frameDelay = newState == ActionState.WalkingFront || newState == ActionState.WalkingBack ? 1 : 1;
+            currentFrame = 0;
+
+            if (Animations.ContainsKey(newState))
+            {
+                CurrentImage = Animations[newState][0];
+            }
+
+            // Đặt khoảng thời gian giữa các frame dựa trên hành động
+            frameInterval = GetFrameIntervalForState(newState);
+            frameTimer.Interval = frameInterval; // Cập nhật tốc độ Timer
+
+            /// neu state la tan cong
+            if (IsAttackAction(newState))
+            {
+                lastFrameOfAttackAnimation = Animations[newState].Count - 1; // lấy frame để kiểm tra tấn công
+            }
+        }
+        private int GetFrameIntervalForState(ActionState state)
+        {
+            switch (state)
+            {
+                case ActionState.Standing: return 50;
+                case ActionState.WalkingBack: return 50;
+                case ActionState.WalkingFront: return 50;
+                case ActionState.Jumping: return 50;
+                case ActionState.AttackingJ: return 50;
+                case ActionState.AttackingI: return 50;
+                default: return 32;
+            }
+        }
+        public bool IsAttackAction(ActionState ac)
+        {
+            return ac == ActionState.AttackingJ || ac == ActionState.AttackingK || ac == ActionState.AttackingL || ac == ActionState.AttackingI;
+        }
+        public void StopAttacking()
+        {
+            if (!isAttacking) ChangeState(ActionState.Standing);
         }
         /*private void UpdateFrame()
         {
@@ -300,47 +347,6 @@ namespace StreetFighterGame.GameEngine
                 ChangeState(ActionState.Standing);
             }
         }
-        public void ChangeState(ActionState newState)
-        {
-            if (CurrentState == newState || isAttacking || isHit) return;
-
-            
-            CurrentState = newState;
-            frameDelay = newState == ActionState.WalkingFront || newState == ActionState.WalkingBack ? 1 : 1;
-            currentFrame = 0;
-
-            if (Animations.ContainsKey(newState))
-            {
-                CurrentImage = Animations[newState][0];
-            }
-
-            // Đặt khoảng thời gian giữa các frame dựa trên hành động
-            frameInterval = GetFrameIntervalForState(newState);
-            frameTimer.Interval = frameInterval; // Cập nhật tốc độ Timer
-
-            /// neu state la tan cong
-            if (IsAttackAction(newState))
-            {
-                lastFrameOfAttackAnimation = Animations[newState].Count - 1; // lấy frame để kiểm tra tấn công
-            }
-        }
-        private int GetFrameIntervalForState(ActionState state)
-        {
-            switch (state)
-            {
-                case ActionState.Standing: return 50;
-                case ActionState.WalkingBack: return 50;
-                case ActionState.WalkingFront: return 50;
-                case ActionState.Jumping: return 50;
-                case ActionState.AttackingJ: return 50;
-                case ActionState.AttackingI: return 50;
-                default: return 32;
-            }
-        }
-        public bool IsAttackAction(ActionState ac)
-        {
-            return ac == ActionState.AttackingJ || ac == ActionState.AttackingK || ac == ActionState.AttackingL || ac == ActionState.AttackingI;
-        }
         public bool IsOnGround() // kiem tra co tren mat dat ko
         {
             //Console.WriteLine("vua goi IsOnGround");
@@ -374,7 +380,7 @@ namespace StreetFighterGame.GameEngine
         {
             if (IsOnGround()) // Kiểm tra nếu đang ở mặt đất
             {
-                jumpSpeed = 70f;
+                jumpSpeed = 80f;
                 ChangeState(ActionState.Jumping);
                 isJumpping = true;
             }
@@ -397,10 +403,7 @@ namespace StreetFighterGame.GameEngine
                 isDefense = false;
             }
         }
-        public void StopAttacking()
-        {
-            if (!isAttacking) ChangeState(ActionState.Standing);
-        }
+        
         protected void LoadAvatar(string avatarPath)
         {
             string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, avatarPath);

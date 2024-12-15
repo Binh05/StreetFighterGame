@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormLogincs));
             this.panelLogin = new System.Windows.Forms.Panel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.linkLabelDoiMatKhau = new System.Windows.Forms.LinkLabel();
             this.linkLabelCreatAccount = new System.Windows.Forms.LinkLabel();
             this.buttonLogin = new System.Windows.Forms.Button();
@@ -38,6 +39,7 @@
             this.textBoxPassWord = new System.Windows.Forms.TextBox();
             this.textBoxUserName = new System.Windows.Forms.TextBox();
             this.panelCreatAccount = new System.Windows.Forms.Panel();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.linkLabelback = new System.Windows.Forms.LinkLabel();
             this.labelCanhBao = new System.Windows.Forms.Label();
             this.buttonCreatAccount = new System.Windows.Forms.Button();
@@ -60,13 +62,16 @@
             this.textBoxNewPassWord1 = new System.Windows.Forms.TextBox();
             this.textBoxOldPassWord = new System.Windows.Forms.TextBox();
             this.panelLogin.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panelCreatAccount.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panelDoiMatKhau.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelLogin
             // 
             this.panelLogin.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.panelLogin.Controls.Add(this.pictureBox1);
             this.panelLogin.Controls.Add(this.linkLabelDoiMatKhau);
             this.panelLogin.Controls.Add(this.linkLabelCreatAccount);
             this.panelLogin.Controls.Add(this.buttonLogin);
@@ -80,13 +85,24 @@
             this.panelLogin.Size = new System.Drawing.Size(391, 484);
             this.panelLogin.TabIndex = 0;
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackgroundImage = global::StreetFighterGame.Properties.Resources.Street_Fighter_Logo;
+            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox1.Location = new System.Drawing.Point(44, 20);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(289, 84);
+            this.pictureBox1.TabIndex = 7;
+            this.pictureBox1.TabStop = false;
+            // 
             // linkLabelDoiMatKhau
             // 
             this.linkLabelDoiMatKhau.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.linkLabelDoiMatKhau.AutoSize = true;
             this.linkLabelDoiMatKhau.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLabelDoiMatKhau.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.linkLabelDoiMatKhau.Location = new System.Drawing.Point(139, 422);
+            this.linkLabelDoiMatKhau.Location = new System.Drawing.Point(236, 217);
             this.linkLabelDoiMatKhau.Name = "linkLabelDoiMatKhau";
             this.linkLabelDoiMatKhau.Size = new System.Drawing.Size(107, 20);
             this.linkLabelDoiMatKhau.TabIndex = 6;
@@ -100,7 +116,7 @@
             this.linkLabelCreatAccount.AutoSize = true;
             this.linkLabelCreatAccount.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLabelCreatAccount.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.linkLabelCreatAccount.Location = new System.Drawing.Point(32, 385);
+            this.linkLabelCreatAccount.Location = new System.Drawing.Point(31, 405);
             this.linkLabelCreatAccount.Name = "linkLabelCreatAccount";
             this.linkLabelCreatAccount.Size = new System.Drawing.Size(310, 20);
             this.linkLabelCreatAccount.TabIndex = 5;
@@ -113,7 +129,7 @@
             this.buttonLogin.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.buttonLogin.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonLogin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonLogin.Location = new System.Drawing.Point(131, 313);
+            this.buttonLogin.Location = new System.Drawing.Point(125, 315);
             this.buttonLogin.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonLogin.Name = "buttonLogin";
             this.buttonLogin.Size = new System.Drawing.Size(141, 49);
@@ -128,7 +144,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label2.Location = new System.Drawing.Point(35, 183);
+            this.label2.Location = new System.Drawing.Point(39, 210);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(93, 25);
             this.label2.TabIndex = 3;
@@ -140,7 +156,7 @@
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label1.Location = new System.Drawing.Point(35, 63);
+            this.label1.Location = new System.Drawing.Point(35, 119);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(99, 25);
             this.label1.TabIndex = 2;
@@ -161,7 +177,7 @@
             // 
             this.textBoxUserName.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.textBoxUserName.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxUserName.Location = new System.Drawing.Point(40, 114);
+            this.textBoxUserName.Location = new System.Drawing.Point(40, 153);
             this.textBoxUserName.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBoxUserName.Name = "textBoxUserName";
             this.textBoxUserName.Size = new System.Drawing.Size(316, 34);
@@ -170,6 +186,7 @@
             // panelCreatAccount
             // 
             this.panelCreatAccount.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.panelCreatAccount.Controls.Add(this.pictureBox2);
             this.panelCreatAccount.Controls.Add(this.linkLabelback);
             this.panelCreatAccount.Controls.Add(this.labelCanhBao);
             this.panelCreatAccount.Controls.Add(this.buttonCreatAccount);
@@ -185,6 +202,17 @@
             this.panelCreatAccount.Size = new System.Drawing.Size(461, 484);
             this.panelCreatAccount.TabIndex = 1;
             this.panelCreatAccount.Paint += new System.Windows.Forms.PaintEventHandler(this.panelCreatAccount_Paint);
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.BackgroundImage = global::StreetFighterGame.Properties.Resources.vegito;
+            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox2.Location = new System.Drawing.Point(160, 18);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(133, 94);
+            this.pictureBox2.TabIndex = 12;
+            this.pictureBox2.TabStop = false;
             // 
             // linkLabelback
             // 
@@ -226,7 +254,7 @@
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label5.Location = new System.Drawing.Point(33, 251);
+            this.label5.Location = new System.Drawing.Point(33, 266);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(205, 25);
             this.label5.TabIndex = 10;
@@ -237,7 +265,7 @@
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label4.Location = new System.Drawing.Point(27, 169);
+            this.label4.Location = new System.Drawing.Point(27, 185);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(93, 25);
             this.label4.TabIndex = 9;
@@ -248,7 +276,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label3.Location = new System.Drawing.Point(27, 85);
+            this.label3.Location = new System.Drawing.Point(27, 142);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(99, 25);
             this.label3.TabIndex = 6;
@@ -266,7 +294,7 @@
             // textBoxCreatPassWord
             // 
             this.textBoxCreatPassWord.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxCreatPassWord.Location = new System.Drawing.Point(32, 196);
+            this.textBoxCreatPassWord.Location = new System.Drawing.Point(32, 217);
             this.textBoxCreatPassWord.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBoxCreatPassWord.Name = "textBoxCreatPassWord";
             this.textBoxCreatPassWord.Size = new System.Drawing.Size(380, 34);
@@ -275,7 +303,7 @@
             // textBoxCreatAccount
             // 
             this.textBoxCreatAccount.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxCreatAccount.Location = new System.Drawing.Point(152, 85);
+            this.textBoxCreatAccount.Location = new System.Drawing.Point(152, 135);
             this.textBoxCreatAccount.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBoxCreatAccount.Name = "textBoxCreatAccount";
             this.textBoxCreatAccount.Size = new System.Drawing.Size(264, 34);
@@ -295,7 +323,7 @@
             this.panelDoiMatKhau.Controls.Add(this.label8);
             this.panelDoiMatKhau.Controls.Add(this.textBoxNewPassWord1);
             this.panelDoiMatKhau.Controls.Add(this.textBoxOldPassWord);
-            this.panelDoiMatKhau.Location = new System.Drawing.Point(358, 30);
+            this.panelDoiMatKhau.Location = new System.Drawing.Point(357, 30);
             this.panelDoiMatKhau.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panelDoiMatKhau.Name = "panelDoiMatKhau";
             this.panelDoiMatKhau.Size = new System.Drawing.Size(461, 484);
@@ -306,7 +334,7 @@
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label10.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label10.Location = new System.Drawing.Point(23, 234);
+            this.label10.Location = new System.Drawing.Point(37, 263);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(241, 25);
             this.label10.TabIndex = 15;
@@ -315,7 +343,7 @@
             // textBoxNewPassWord2
             // 
             this.textBoxNewPassWord2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxNewPassWord2.Location = new System.Drawing.Point(22, 261);
+            this.textBoxNewPassWord2.Location = new System.Drawing.Point(43, 290);
             this.textBoxNewPassWord2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBoxNewPassWord2.Name = "textBoxNewPassWord2";
             this.textBoxNewPassWord2.Size = new System.Drawing.Size(380, 34);
@@ -326,7 +354,7 @@
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label9.Location = new System.Drawing.Point(23, 41);
+            this.label9.Location = new System.Drawing.Point(41, 57);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(99, 25);
             this.label9.TabIndex = 12;
@@ -347,7 +375,7 @@
             // textBoxTaiKhoanDoiMk
             // 
             this.textBoxTaiKhoanDoiMk.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxTaiKhoanDoiMk.Location = new System.Drawing.Point(138, 41);
+            this.textBoxTaiKhoanDoiMk.Location = new System.Drawing.Point(164, 57);
             this.textBoxTaiKhoanDoiMk.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBoxTaiKhoanDoiMk.Name = "textBoxTaiKhoanDoiMk";
             this.textBoxTaiKhoanDoiMk.Size = new System.Drawing.Size(264, 34);
@@ -358,7 +386,7 @@
             this.labelDoiMatKhau.AutoSize = true;
             this.labelDoiMatKhau.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelDoiMatKhau.ForeColor = System.Drawing.Color.Red;
-            this.labelDoiMatKhau.Location = new System.Drawing.Point(33, 334);
+            this.labelDoiMatKhau.Location = new System.Drawing.Point(115, 345);
             this.labelDoiMatKhau.Name = "labelDoiMatKhau";
             this.labelDoiMatKhau.Size = new System.Drawing.Size(160, 20);
             this.labelDoiMatKhau.TabIndex = 6;
@@ -382,7 +410,7 @@
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label7.Location = new System.Drawing.Point(23, 159);
+            this.label7.Location = new System.Drawing.Point(37, 188);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(129, 25);
             this.label7.TabIndex = 10;
@@ -393,7 +421,7 @@
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.label8.Location = new System.Drawing.Point(17, 90);
+            this.label8.Location = new System.Drawing.Point(41, 107);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(119, 25);
             this.label8.TabIndex = 9;
@@ -402,7 +430,7 @@
             // textBoxNewPassWord1
             // 
             this.textBoxNewPassWord1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxNewPassWord1.Location = new System.Drawing.Point(22, 186);
+            this.textBoxNewPassWord1.Location = new System.Drawing.Point(43, 223);
             this.textBoxNewPassWord1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBoxNewPassWord1.Name = "textBoxNewPassWord1";
             this.textBoxNewPassWord1.Size = new System.Drawing.Size(380, 34);
@@ -411,7 +439,7 @@
             // textBoxOldPassWord
             // 
             this.textBoxOldPassWord.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxOldPassWord.Location = new System.Drawing.Point(22, 117);
+            this.textBoxOldPassWord.Location = new System.Drawing.Point(43, 140);
             this.textBoxOldPassWord.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBoxOldPassWord.Name = "textBoxOldPassWord";
             this.textBoxOldPassWord.Size = new System.Drawing.Size(380, 34);
@@ -425,8 +453,8 @@
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1127, 556);
             this.Controls.Add(this.panelLogin);
-            this.Controls.Add(this.panelDoiMatKhau);
             this.Controls.Add(this.panelCreatAccount);
+            this.Controls.Add(this.panelDoiMatKhau);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -436,8 +464,10 @@
             this.Load += new System.EventHandler(this.FormLogincs_Load);
             this.panelLogin.ResumeLayout(false);
             this.panelLogin.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panelCreatAccount.ResumeLayout(false);
             this.panelCreatAccount.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.panelDoiMatKhau.ResumeLayout(false);
             this.panelDoiMatKhau.PerformLayout();
             this.ResumeLayout(false);
@@ -476,5 +506,7 @@
         private System.Windows.Forms.TextBox textBoxTaiKhoanDoiMk;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TextBox textBoxNewPassWord2;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pictureBox2;
     }
 }
