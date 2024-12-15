@@ -437,10 +437,10 @@ namespace StreetFighterGame.GameEngine
         }
         public void TruMau(float dame)
         {
-            Console.WriteLine(dame);
+           /* Console.WriteLine(dame);
             Console.WriteLine(cssm.mauHienTai);
             Console.WriteLine(cssm.mauToiDa);
-            Console.WriteLine(cssm.mauHienTai / cssm.mauToiDa);
+            Console.WriteLine(cssm.mauHienTai / cssm.mauToiDa);*/
             cssm.mauHienTai -= dame;
         }
         public float Dame

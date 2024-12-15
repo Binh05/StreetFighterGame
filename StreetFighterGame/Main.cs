@@ -271,8 +271,28 @@ namespace StreetFighterGame
         private void DrawHitbox(PaintEventArgs e, ActionState attackType, Character character, bool flip)
         {
             if (character.CurrentHitboxImage == null) return;
+
             GraphicsState state = e.Graphics.Save();
-            e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.PositionX + character.charWidth, character.PositionY + (character.charHeight/2 - character.CurrentHitboxImage.Height) + character.CurrentHitboxImage.Height/2, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
+            if (character.IsFacingLeft)
+            {
+                e.Graphics.TranslateTransform(character.PositionX, 0);
+                e.Graphics.ScaleTransform(-1, 1);
+                using (SolidBrush redBrush = new SolidBrush(Color.Red))
+                {
+                    Graphics g = e.Graphics;
+                    g.FillRectangle(redBrush, character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height) + character.CurrentHitboxImage.Height / 2, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)); // Tô đầy hitbox
+                }
+                e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height) + character.CurrentHitboxImage.Height / 2, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
+            }
+            else
+            {
+                using (SolidBrush redBrush = new SolidBrush(Color.Red))
+                {
+                    Graphics g = e.Graphics;
+                    g.FillRectangle(redBrush, character.PositionX + character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height) + character.CurrentHitboxImage.Height / 2, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)); // Tô đầy hitbox
+                }
+                e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.PositionX + character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height) + character.CurrentHitboxImage.Height / 2, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
+            }
             e.Graphics.Restore(state);
         }
 
