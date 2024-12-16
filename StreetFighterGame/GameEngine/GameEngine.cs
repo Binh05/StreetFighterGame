@@ -36,7 +36,7 @@ namespace StreetFighterGame.GameEngine
             // Cập nhật trạng thái của từng nhân vật
             Player1.Update();
             Player2.Update();
-            CollisionHandler.KiemTra2ThangDanhNhau(Player1, Player2);
+            //CollisionHandler.KiemTra2ThangDanhNhau(Player1, Player2);
             //Console.WriteLine("vi tri x nguoi choi 1:" + Player1.PositionX);
             //Console.WriteLine("vi tri x nguoi choi 2:" + Player2.PositionX);
         }

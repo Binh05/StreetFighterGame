@@ -32,7 +32,7 @@ namespace StreetFighterGame.Characters
                 { ActionState.AttackingJ, 9 },       // 3 khung hình cho AttackingJ
                 { ActionState.AttackingK, 7 },      // 17 khung hình cho AttackingK
                 { ActionState.AttackingL, 7 },       // 4 khung hình cho AttackingL
-                { ActionState.AttackingI, 6 },        // 4 khung hình cho AttackingI
+                { ActionState.AttackingI, 4 },        // 4 khung hình cho AttackingI
                 { ActionState.hit, 1 }
             });
 
@@ -45,7 +45,7 @@ namespace StreetFighterGame.Characters
             });
 
             Name = "Vegeto";
-            LoadAvatar(".\\Vegeto\\Vegeto_9000-5.png");
+            LoadAvatar(".\\Vegeto\\Vegeto_9000-4.png");
             LoadHitSound(".\\sound\\PunchHit1.wav");
         }
 

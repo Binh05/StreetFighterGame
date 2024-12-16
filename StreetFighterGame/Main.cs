@@ -193,12 +193,12 @@ namespace StreetFighterGame
 
             // Các hành động khác cho Player 1
             if (player1Jump) logicGame.Player1.Jump();
-            if (player1AttackJ) logicGame.Player1.Attack(attackType: ActionState.AttackingJ);
-            if (player1AttackK) logicGame.Player1.Attack(attackType: ActionState.AttackingK);
-            if (player1AttackL) logicGame.Player1.Attack(attackType: ActionState.AttackingL);
+            if (player1AttackJ) logicGame.Player1.Attack(attackType: ActionState.AttackingJ, logicGame.Player1, logicGame.Player2);
+            if (player1AttackK) logicGame.Player1.Attack(attackType: ActionState.AttackingK, logicGame.Player1, logicGame.Player2);
+            if (player1AttackL) logicGame.Player1.Attack(attackType: ActionState.AttackingL, logicGame.Player1, logicGame.Player2);
             if (player1AttackI)
             {
-                logicGame.Player1.Attack(attackType: ActionState.AttackingI);
+                logicGame.Player1.Attack(attackType: ActionState.AttackingI, logicGame.Player1, logicGame.Player2);
                 logicGame.Player1.startDrawHitbox();
             }
 
@@ -229,12 +229,12 @@ namespace StreetFighterGame
 
             // Các hành động khác cho Player 2
             if (player2Jump) logicGame.Player2.Jump();
-            if (player2AttackJ) logicGame.Player2.Attack(attackType: ActionState.AttackingJ);
-            if (player2AttackK) logicGame.Player2.Attack(attackType: ActionState.AttackingK);
-            if (player2AttackL) logicGame.Player2.Attack(attackType: ActionState.AttackingL);
+            if (player2AttackJ) logicGame.Player2.Attack(attackType: ActionState.AttackingJ, logicGame.Player1, logicGame.Player2);
+            if (player2AttackK) logicGame.Player2.Attack(attackType: ActionState.AttackingK, logicGame.Player1, logicGame.Player2);
+            if (player2AttackL) logicGame.Player2.Attack(attackType: ActionState.AttackingL, logicGame.Player1, logicGame.Player2);
             if (player2AttackI)
             {
-                logicGame.Player2.Attack(attackType: ActionState.AttackingI);
+                logicGame.Player2.Attack(attackType: ActionState.AttackingI, logicGame.Player1, logicGame.Player2);
                 logicGame.Player2.startDrawHitbox();
             }
         }
@@ -251,7 +251,7 @@ namespace StreetFighterGame
 
             // Lưu trạng thái đồ họa hiện tại
             GraphicsState state = e.Graphics.Save();
-
+            
             // Nếu cần flip, thực hiện flip
             if (shouldFlip)
             {
@@ -259,53 +259,66 @@ namespace StreetFighterGame
                 character.IsFacingLeft = true;
                 e.Graphics.TranslateTransform(character.PositionX, 0);
                 e.Graphics.ScaleTransform(-1, 1); // Lật trên trục X
+                character.rectangle = new Rectangle(character.PositionX + character.charWidth, character.PositionY, character.charWidth, character.charHeight);
                 e.Graphics.DrawImage(character.CurrentImage, new Rectangle(0, character.PositionY, character.charWidth, character.charHeight));
             }
             else
             {
-                e.Graphics.DrawImage(character.CurrentImage, new Rectangle(character.PositionX, character.PositionY, character.charWidth, character.charHeight));
+                character.rectangle = new Rectangle(character.PositionX, character.PositionY, character.charWidth, character.charHeight);
+                e.Graphics.DrawImage(character.CurrentImage, character.rectangle);
             }
 
             // Khôi phục trạng thái đồ họa
             e.Graphics.Restore(state);
         }
-        private void DrawHitbox(PaintEventArgs e, ActionState attackType, Character character, bool flip)
+        private void DrawHitbox(PaintEventArgs e, ActionState attackType, Character character, bool flip, Character character2)
         {
-            
 
             GraphicsState state = e.Graphics.Save();
             if (character.IsFacingLeft)
             {
                 e.Graphics.TranslateTransform(character.PositionX, 0);
                 e.Graphics.ScaleTransform(-1, 1);
-                using (SolidBrush redBrush = new SolidBrush(Color.Red))
+                if (character.CurrentHitboxImage == null)
                 {
-                    Graphics g = e.Graphics;
-                    g.FillRectangle(redBrush, character.charWidth, character.PositionY + (character.charHeight / 2 - 50), character.charWidth, 100); // Tô đầy hitbox
+                    Rectangle rectangleHitbox = new Rectangle(0, character.PositionY + (character.charHeight / 2 - 50), character.charWidth, 100);
+                    using (SolidBrush redBrush = new SolidBrush(Color.Red))
+                    {
+                        Graphics g = e.Graphics;
+                        g.FillRectangle(redBrush, rectangleHitbox); // Tô đầy hitbox
+                        g.FillRectangle(redBrush, character2.rectangle);
+                    }
+                    CollisionHandler.KiemTra2ThangDanhNhau(character, character2, rectangleHitbox, character2.rectangle);
                 }
-                e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height) + character.CurrentHitboxImage.Height / 2, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
+                else
+                {
+                    Rectangle rectangleHitbox = new Rectangle(character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height) + character.CurrentHitboxImage.Height / 2, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height));
+                    e.Graphics.DrawImage(character.CurrentHitboxImage, rectangleHitbox);
+                    CollisionHandler.KiemTra2ThangDanhNhau(character, character2, rectangleHitbox, character2.rectangle);
+                }
             }
             else
             {
                 if (character.CurrentHitboxImage == null)
                 {
+                    Rectangle rectangleHitbox = new Rectangle(character.PositionX, character.PositionY + (character.charHeight / 2 - 50), character.charWidth, 100);
                     using (SolidBrush redBrush = new SolidBrush(Color.Red))
                     {
                         Graphics g = e.Graphics;
                         g.FillRectangle(redBrush, character.PositionX, character.PositionY + (character.charHeight / 2 - 50), character.charWidth, 100); // Tô đầy hitbox
+                        g.FillRectangle(redBrush, character2.rectangle);
                     }
+                    CollisionHandler.KiemTra2ThangDanhNhau(character, character2, rectangleHitbox, character2.rectangle);
                 }
                 else
                 {
-                    using (SolidBrush redBrush = new SolidBrush(Color.Red))
-                    {
-                        Graphics g = e.Graphics;
-                        g.FillRectangle(redBrush, character.PositionX + character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height / 2), (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)); // Tô đầy hitbox
-                    }
+                    Rectangle rectangleHitbox = new Rectangle(character.PositionX + character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height / 2), (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height));
                     e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.PositionX + character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height / 2), (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
+                    CollisionHandler.KiemTra2ThangDanhNhau(character, character2, rectangleHitbox, character2.rectangle);
                 }
             }
             e.Graphics.Restore(state);
+            
         }
 
 
@@ -349,8 +362,8 @@ namespace StreetFighterGame
                 DrawCharacter(e, logicGame.Player2, flip: true);  // Vẽ nhân vật Player2
             }
             
-            if (logicGame.Player1.DangDanhDungKo()) DrawHitbox(e, attackType: ActionState.AttackingI, logicGame.Player1, flip: false);
-            if (logicGame.Player2.DangDanhDungKo())  DrawHitbox(e, attackType: ActionState.AttackingI, logicGame.Player2, flip: false);
+            if (logicGame.Player1.DangDanhDungKo()) DrawHitbox(e, attackType: ActionState.AttackingI, logicGame.Player1, flip: false, logicGame.Player2);
+            if (logicGame.Player2.DangDanhDungKo())  DrawHitbox(e, attackType: ActionState.AttackingI, logicGame.Player2, flip: false, logicGame.Player1);
         }
         private void SetTextWinner(string nameWinner)
         {

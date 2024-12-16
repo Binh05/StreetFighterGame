@@ -56,6 +56,7 @@ namespace StreetFighterGame.GameEngine
         public int charHeight { get; set; }
         public int hitboxWidth {  get; set; }
         public int hitboxHeight { get; set; }
+        public Rectangle rectangle { get; set; }
 
         protected Dictionary<ActionState, List<Image>> Animations { get; set; }
         protected Dictionary<ActionState, List<Image>> HitboxAnimations { get; set; }
@@ -154,6 +155,7 @@ namespace StreetFighterGame.GameEngine
             {
                 var frames = Animations[CurrentState];
                 currentFrame = (currentFrame + 1) % frames.Count;
+                if (currentFrame == lastFrameOfAttackAnimation && currentHitboxFrame != lastFrameOfHitboxAnimation) currentFrame = 1;
                 CurrentImage = frames[currentFrame];
 
                 // Nếu là trạng thái tấn công, kiểm tra nếu đến frame cuối thì ngừng tấn công
@@ -239,7 +241,7 @@ namespace StreetFighterGame.GameEngine
             if (isHit) return;
             if (isJumpping) HandleJumping();
         }
-        public void Attack(ActionState attackType)
+        public void Attack(ActionState attackType, Character player1, Character player2)
         {
             ChangeState(attackType);
             PositionX = Math.Min(PositionX + (IsFacingLeft ? -2 : 2), 900);

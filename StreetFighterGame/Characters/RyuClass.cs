@@ -35,6 +35,8 @@ namespace StreetFighterGame.Characters
                 { ActionState.AttackingI, 9 }      // 9 khung hình cho AttackingI
             });
 
+
+
             Name = "Ryu";
             LoadAvatar(".\\Ryu\\Ryu_9000-1.png");
         }

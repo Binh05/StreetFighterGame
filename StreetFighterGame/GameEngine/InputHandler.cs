@@ -46,7 +46,7 @@ namespace StreetFighterGame.GameEngine
             Player = CharacterFactory.CreateCharacter(characterName, startX: 100, startY: 400);
         }
 
-        public void OnKeyDown(Keys key)
+        /*public void OnKeyDown(Keys key)
         {
             if (Player.isHit) return;
             pressedKey.Add(key);
@@ -84,7 +84,7 @@ namespace StreetFighterGame.GameEngine
             {
                 Player.Attack(ActionState.AttackingI);
             }
-        }
+        }*/
 
         public void OnKeyUp(Keys key)
         {
@@ -108,12 +108,12 @@ namespace StreetFighterGame.GameEngine
         public void Update()
         {
             // Process input
-            ProcessInput();
+            //ProcessInput();
             Player.Update();
 
         }
 
-        public void ProcessInput()
+        /*public void ProcessInput()
         {
             // Handle movement and attacks
             if (pressedKey.Contains(moveRightKey)) Player.MoveRight();
@@ -129,6 +129,6 @@ namespace StreetFighterGame.GameEngine
             if (pressedKey.Contains(attackKKey)) Player.Attack(ActionState.AttackingK);
             if (pressedKey.Contains(attackLKey)) Player.Attack(ActionState.AttackingL);
             if (pressedKey.Contains(attackIKey)) Player.Attack(ActionState.AttackingI);
-        }
+        }*/
     }
 }
