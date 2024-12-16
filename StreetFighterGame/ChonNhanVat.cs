@@ -64,7 +64,7 @@ namespace StreetFighterGame
 
             // Load các khung hình cho từng nhân vật
             characterAnimations["chunli"] = LoadAnimationFrames(".\\Chunli\\", "ChunLi_0-{0}.png", 4);
-            characterAnimations["goku"] = LoadAnimationFrames(".\\GokuMUI\\", "GokuMUI_0-{0}.png", 3);
+            characterAnimations["goku"] = LoadAnimationFrames(".\\GokuMUI\\", "GokuMUI_0-{0}.png", 5);
             characterAnimations["kyo"] = LoadAnimationFrames(".\\Kyo\\", "Kyo_0-{0}.png", 4);
             characterAnimations["king"] = LoadAnimationFrames(".\\King\\", "King_0-{0}.png", 5);
             characterAnimations["ryu"] = LoadAnimationFrames(".\\Ryu\\", "Ryu_0-{0}.png", 5);
@@ -265,6 +265,11 @@ namespace StreetFighterGame
             currentInDexMapSelect--;
             if (currentInDexMapSelect < 0) currentInDexMapSelect = mapPaths.Count - 1;
             ShowCurrentInDexMapOnPictureBox();
+        }
+
+        private void pictureBoxChar1_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void buttonLogOut_Click(object sender, EventArgs e)

@@ -13,8 +13,8 @@ namespace StreetFighterGame.Characters
             LoadAnimations(".\\GokuMUI", new Dictionary<ActionState, string>
             {
                 { ActionState.Standing, "GokuMUI_0" },
-                { ActionState.WalkingFront, "GokuMUI_25" },
-                { ActionState.WalkingBack, "GokuMUI_25" },
+                { ActionState.WalkingFront, "GokuMUI_20" },
+                { ActionState.WalkingBack, "GokuMUI_20" },
                 { ActionState.Defending, "GokuMUI_120" },
                 { ActionState.Jumping, "GokuMUI_40" },
                 { ActionState.AttackingJ, "GokuMUI_201" },
@@ -24,9 +24,9 @@ namespace StreetFighterGame.Characters
                 { ActionState.hit, "GokuMUI_5001" }
             }, new Dictionary<ActionState, int>
             {
-                { ActionState.Standing, 3 },         // 4 khung hình cho Standing
-                { ActionState.WalkingFront, 5 },     // 6 khung hình cho WalkingFront
-                { ActionState.WalkingBack, 5 },      // 6 khung hình cho WalkingBack
+                { ActionState.Standing, 5 },         // 4 khung hình cho Standing
+                { ActionState.WalkingFront, 4 },     // 6 khung hình cho WalkingFront
+                { ActionState.WalkingBack, 4 },      // 6 khung hình cho WalkingBack
                 { ActionState.Defending, 3 },        // 3 khung hình cho Defending
                 { ActionState.Jumping, 1 },         // 10 khung hình cho Jumping
                 { ActionState.AttackingJ, 15 },       // 3 khung hình cho AttackingJ
@@ -38,14 +38,14 @@ namespace StreetFighterGame.Characters
 
             LoadHitboxAnimations(".\\GokuMUI", new Dictionary<ActionState, string>
             {
-                { ActionState.AttackingI, "GokuMUI_1010" }
+                { ActionState.AttackingI, "Vegeto_1405" }
             }, new Dictionary<ActionState, int>
             {
-                { ActionState.AttackingI, 10 }
+                { ActionState.AttackingI, 13 }
             });
 
             Name = "Goku";
-            LoadAvatar(".\\GokuMUI\\GokuMUI_9000-1.png");
+            LoadAvatar(".\\GokuMUI\\GokuMUI_9000-3.png");
         }
 
         //public override void Attack(ActionState attackType)

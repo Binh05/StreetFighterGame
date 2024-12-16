@@ -112,7 +112,6 @@
     </Compile>
     <Compile Include="GameEngine\Character.cs" />
     <Compile Include="GameEngine\CharacterFactory.cs" />
-    <Compile Include="GameEngine\Hitbox.cs" />
     <Compile Include="LICH_SU_TRAN_DAU.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>

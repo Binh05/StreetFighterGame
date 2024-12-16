@@ -251,6 +251,7 @@
             this.pictureBoxChar1.Size = new System.Drawing.Size(100, 169);
             this.pictureBoxChar1.TabIndex = 20;
             this.pictureBoxChar1.TabStop = false;
+            this.pictureBoxChar1.Click += new System.EventHandler(this.pictureBoxChar1_Click);
             // 
             // buttonLogOut
             // 

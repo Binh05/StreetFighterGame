@@ -112,19 +112,6 @@ namespace StreetFighterGame.GameEngine
             SetChiSoSucManh(mau, d);
             //LoadHitSound();
         }
-        public void createHitbox(ActionState attackType, Graphics g)
-        {
-            int hitboxLifetime = 100;
-            
-            int hitboxX = IsFacingLeft ? PositionX - charWidth : PositionX + charWidth; // Tọa độ X dựa trên hướng
-            int hitboxY = PositionY + (int)(CurrentImage.Height / 2);
-
-            List<Image> hitboxAnimations = HitboxAnimations.ContainsKey(attackType) ? HitboxAnimations[attackType] : null;
-
-            // Tạo hitbox mới
-            Hitbox hitbox = new Hitbox(hitboxX, hitboxY, hitboxLifetime, hitboxAnimations);
-            hitbox.Draw(g);
-        }
         public void Draw(Graphics g)
         {
             if (CurrentImage != null)
@@ -155,7 +142,7 @@ namespace StreetFighterGame.GameEngine
             {
                 var frames = Animations[CurrentState];
                 currentFrame = (currentFrame + 1) % frames.Count;
-                if (currentFrame == lastFrameOfAttackAnimation && currentHitboxFrame != lastFrameOfHitboxAnimation) currentFrame = 1;
+                if (currentFrame == lastFrameOfAttackAnimation && currentHitboxFrame != lastFrameOfHitboxAnimation) currentFrame = 3;
                 CurrentImage = frames[currentFrame];
 
                 // Nếu là trạng thái tấn công, kiểm tra nếu đến frame cuối thì ngừng tấn công

@@ -22,6 +22,7 @@ namespace StreetFighterGame
         private List<string> backgroundImages = new List<string>();
         private int idChar1, idChar2;
         private Timer animationTimer;
+        private AnimationManager animationManager = new AnimationManager();
 
         // Thêm các biến kiểm tra trạng thái các phím của người chơi
         private bool player1MoveLeft, player1MoveRight, player1Jump, player1AttackJ, player1AttackK, player1AttackL, player1AttackI;
@@ -304,7 +305,10 @@ namespace StreetFighterGame
                 }
             }
 
-            CollisionHandler.KiemTra2ThangDanhNhau(character, character2, rectangleHitbox, character2.rectangle);
+            if(CollisionHandler.KiemTra2ThangDanhNhau(character, character2, rectangleHitbox, character2.rectangle, animationManager, this))
+            {
+                animationManager.DrawImage(e.Graphics);
+            }
 
             e.Graphics.Restore(state);
             
