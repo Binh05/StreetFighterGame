@@ -259,7 +259,7 @@ namespace StreetFighterGame
                 character.IsFacingLeft = true;
                 e.Graphics.TranslateTransform(character.PositionX, 0);
                 e.Graphics.ScaleTransform(-1, 1); // Lật trên trục X
-                character.rectangle = new Rectangle(character.PositionX + character.charWidth, character.PositionY, character.charWidth, character.charHeight);
+                character.rectangle = new Rectangle(character.PositionX - character.charWidth, character.PositionY, character.charWidth, character.charHeight);
                 e.Graphics.DrawImage(character.CurrentImage, new Rectangle(0, character.PositionY, character.charWidth, character.charHeight));
             }
             else
@@ -273,50 +273,39 @@ namespace StreetFighterGame
         }
         private void DrawHitbox(PaintEventArgs e, ActionState attackType, Character character, bool flip, Character character2)
         {
-
+            Rectangle rectangleHitbox;
             GraphicsState state = e.Graphics.Save();
+            
             if (character.IsFacingLeft)
             {
                 e.Graphics.TranslateTransform(character.PositionX, 0);
                 e.Graphics.ScaleTransform(-1, 1);
                 if (character.CurrentHitboxImage == null)
                 {
-                    Rectangle rectangleHitbox = new Rectangle(0, character.PositionY + (character.charHeight / 2 - 50), character.charWidth, 100);
-                    using (SolidBrush redBrush = new SolidBrush(Color.Red))
-                    {
-                        Graphics g = e.Graphics;
-                        g.FillRectangle(redBrush, rectangleHitbox); // Tô đầy hitbox
-                        g.FillRectangle(redBrush, character2.rectangle);
-                    }
-                    CollisionHandler.KiemTra2ThangDanhNhau(character, character2, rectangleHitbox, character2.rectangle);
+                    rectangleHitbox = new Rectangle(character.PositionX - character.charWidth, character.PositionY + (character.charHeight / 2 - (character.charHeight / 2)), character.charWidth, character.charHeight/2);
                 }
                 else
                 {
-                    Rectangle rectangleHitbox = new Rectangle(character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height) + character.CurrentHitboxImage.Height / 2, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height));
-                    e.Graphics.DrawImage(character.CurrentHitboxImage, rectangleHitbox);
-                    CollisionHandler.KiemTra2ThangDanhNhau(character, character2, rectangleHitbox, character2.rectangle);
+                    rectangleHitbox = new Rectangle(character.PositionX - character.charWidth - character.CurrentHitboxImage.Width, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height) + character.CurrentHitboxImage.Height / 2, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height));
+                    e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height) + character.CurrentHitboxImage.Height / 2, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
                 }
             }
             else
             {
                 if (character.CurrentHitboxImage == null)
                 {
-                    Rectangle rectangleHitbox = new Rectangle(character.PositionX, character.PositionY + (character.charHeight / 2 - 50), character.charWidth, 100);
-                    using (SolidBrush redBrush = new SolidBrush(Color.Red))
-                    {
-                        Graphics g = e.Graphics;
-                        g.FillRectangle(redBrush, character.PositionX, character.PositionY + (character.charHeight / 2 - 50), character.charWidth, 100); // Tô đầy hitbox
-                        g.FillRectangle(redBrush, character2.rectangle);
-                    }
-                    CollisionHandler.KiemTra2ThangDanhNhau(character, character2, rectangleHitbox, character2.rectangle);
+                    rectangleHitbox = new Rectangle(character.PositionX, character.PositionY + (character.charHeight / 2 - (character.charHeight / 2)), character.charWidth, character.charHeight / 2);
                 }
                 else
                 {
-                    Rectangle rectangleHitbox = new Rectangle(character.PositionX + character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height / 2), (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height));
+                    rectangleHitbox = new Rectangle(character.PositionX + character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height / 2), (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height));
                     e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.PositionX + character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height / 2), (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
-                    CollisionHandler.KiemTra2ThangDanhNhau(character, character2, rectangleHitbox, character2.rectangle);
+                    
                 }
             }
+
+            CollisionHandler.KiemTra2ThangDanhNhau(character, character2, rectangleHitbox, character2.rectangle);
+
             e.Graphics.Restore(state);
             
         }
