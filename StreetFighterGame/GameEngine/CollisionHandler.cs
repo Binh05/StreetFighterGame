@@ -14,12 +14,12 @@ namespace StreetFighterGame.GameEngine
         public static bool KiemTra2ThangDanhNhau(Character Player1, Character Player2, Rectangle r1, Rectangle r2, AnimationManager animationManager, Control control)
         {
             int lech1 = (Player1.IsFacingLeft) ? -2 : 2;
-            int lechX = (Player2.IsFacingLeft) ? Player2.charWidth : 0;
+            int lechX = (Player2.IsFacingLeft) ? (int)(Player2.charWidth * 1.5f) : 0;
             if (Player1.DangDanhDungKo() && r1.IntersectsWith(r2))
             {
                 Player1.PlayHitSound();
                 //Console.WriteLine(Player2.PositionX - lechX);
-                animationManager.DrawMele(control, Player2.PositionX - lechX, Player2.PositionY);
+                animationManager.DrawMele(control, Player2.PositionX - lechX, Player2.PositionY - Player2.charHeight / 3);
                 Player2.TruMau(Player1.Dame);
                 Player2.PositionX = Math.Min(Player2.PositionX + lech1, 900);
                 Player2.XuLiKhiBiDanh();

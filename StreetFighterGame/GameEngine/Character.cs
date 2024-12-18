@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NAudio.Wave;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Drawing;
@@ -54,12 +55,15 @@ namespace StreetFighterGame.GameEngine
         public Image Avatar { get; set; }  // Ảnh đại diện cho nhân vật
         public int charWidth { get; set; }
         public int charHeight { get; set; }
-        public int HitboxPositionX { get; set; }
-        public int HitboxPositionY { get; set; }
+        public int HitboxPositionXLeft { get; set; }
+        public int HitboxPositionXRight { get; set; }
+        public int HitboxPositionYLeft { get; set; }
+        public int HitboxPositionYRight { get; set; }
         public int hitboxWidth {  get; set; }
         public int hitboxHeight { get; set; }
         protected int HitboxDurian {  get; set; }
         public Rectangle rectangle { get; set; }
+        //public Rectangle rectangleHitbox {  get; set; }
 
         protected Dictionary<ActionState, List<Image>> Animations { get; set; }
         protected Dictionary<ActionState, List<Image>> HitboxAnimations { get; set; }
@@ -91,6 +95,8 @@ namespace StreetFighterGame.GameEngine
 
         //public string soundPath = ".\\sound\\PunchHit1.wav";
         private SoundPlayer soundPlayer;
+
+        
         protected Character(int startX, int startY, float scaleFactor, int mau, int d, int hitboxDurian = 100)
         {
             PositionX = startX;
@@ -120,14 +126,14 @@ namespace StreetFighterGame.GameEngine
 
         public void LoadHitSound(string soundPath)
         {
-            string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, soundPath);
-            if (File.Exists(fullPath))
+            using (var audioFile = new AudioFileReader(soundPath))
+            using (var outputDevice = new WaveOutEvent())
             {
-                soundPlayer = new SoundPlayer(fullPath);
-            }
-            else
-            {
-                Console.WriteLine("Sound file not found: " + fullPath);
+                outputDevice.Init(audioFile);
+                outputDevice.Play();
+
+                Console.WriteLine("Đang phát âm thanh... Nhấn Enter để dừng.");
+                Console.ReadLine(); // Đợi người dùng nhấn Enter để kết thúc
             }
         }
         public void PlayHitSound()

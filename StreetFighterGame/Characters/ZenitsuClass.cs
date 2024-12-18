@@ -10,6 +10,8 @@ namespace StreetFighterGame.Characters
 {
     public class Zenitsu : Character
     {
+        public Rectangle rectangleHitboxRight {  get; set; } = Rectangle.Empty;
+        public Rectangle rectangleHitboxLeft { get; set; } = Rectangle.Empty;
         public Zenitsu(int startX, int startY, float scaleFactor) : base(startX, startY, scaleFactor, 500, 1, 100)
         {
             // Tải hoạt ảnh cho Goku với ActionState
@@ -44,7 +46,7 @@ namespace StreetFighterGame.Characters
                 { ActionState.AttackingI, "Zenitsu_1602" }
             }, new Dictionary<ActionState, int>
             {
-                { ActionState.AttackingI, 32 }
+                { ActionState.AttackingI, 25 }
             });
 
             Name = "Zenitsu";
@@ -56,8 +58,10 @@ namespace StreetFighterGame.Characters
             Attack(ActionState.AttackingI);
 
             startDrawHitbox();
-            HitboxPositionX = PositionX - (PositionX + charWidth / 2 - CurrentHitboxImage.Width / 2);
-            HitboxPositionY = BaseY - CurrentHitboxImage.Height;
+
+            HitboxPositionXLeft = PositionX - charWidth / 2 - CurrentHitboxImage.Width / 2;
+            HitboxPositionXRight = PositionX - CurrentHitboxImage.Width / 2 + charWidth / 2;
+            HitboxPositionYRight = HitboxPositionYLeft = BaseY - CurrentHitboxImage.Height;
 
             frameTimer.Stop();
             frameTimer.Tick -= OnFrameTimerTick;
@@ -76,7 +80,10 @@ namespace StreetFighterGame.Characters
             {
                 var frames = HitboxAnimations[ActionState.AttackingI];
                 base.currentHitboxFrame = (currentHitboxFrame + 1) % frames.Count;
-                HitboxPositionY = BaseY - frames[currentHitboxFrame].Height;
+
+                HitboxPositionXLeft = PositionX - charWidth / 2 - CurrentHitboxImage.Width / 2;
+                HitboxPositionXRight = PositionX - frames[currentFrame].Width / 2 + charWidth / 2;
+
                 base.CurrentHitboxImage = frames[currentHitboxFrame];
 
                 if (base.currentHitboxFrame == base.lastFrameOfHitboxAnimation)

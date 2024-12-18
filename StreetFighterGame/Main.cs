@@ -235,7 +235,6 @@ namespace StreetFighterGame
         private void DrawCharacter(PaintEventArgs e, Character character, bool flip)
         {
             if (character == null) return;
-
             // Sử dụng `IsMovingLeft` để quyết định có flip hình ảnh hay không
             bool shouldFlip = character.IsMovingLeft || (!character.IsMovingLeft && character.IsFacingLeft);
             character.charWidth = (int)(character.CurrentImage.Width * character.ScaleFactor);
@@ -271,16 +270,23 @@ namespace StreetFighterGame
             
             if (character.IsFacingLeft)
             {
-                e.Graphics.TranslateTransform(character.PositionX, 0);
-                e.Graphics.ScaleTransform(-1, 1);
                 if (character.CurrentHitboxImage == null)
                 {
                     rectangleHitbox = new Rectangle(character.PositionX - character.charWidth, character.PositionY + (character.charHeight / 2 - (character.charHeight / 2)), character.charWidth, character.charHeight/2);
                 }
                 else
                 {
-                    rectangleHitbox = new Rectangle(character.PositionX - character.charWidth - character.CurrentHitboxImage.Width, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height) + character.CurrentHitboxImage.Height / 2, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height));
-                    e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height) + character.CurrentHitboxImage.Height / 2, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
+                    rectangleHitbox = new Rectangle(character.HitboxPositionXLeft, character.HitboxPositionYLeft, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height));
+                    /*using (SolidBrush redBrush = new SolidBrush(Color.Red))
+                    {
+                        e.Graphics.FillRectangle(redBrush, rectangleHitbox); // Tô đầy hitbox
+                    }*/
+                    e.Graphics.TranslateTransform(character.PositionX, 0);
+                    e.Graphics.ScaleTransform(-1, 1);
+                    
+                    e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.HitboxPositionXRight - character.PositionX, character.HitboxPositionYLeft, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
+                    e.Graphics.TranslateTransform(character.PositionX, 0);
+                    e.Graphics.ScaleTransform(-1, 1);
                 }
             }
             else
@@ -291,8 +297,8 @@ namespace StreetFighterGame
                 }
                 else
                 {
-                    rectangleHitbox = new Rectangle(character.PositionX + character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height / 2), (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height));
-                    e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.PositionX + character.charWidth, character.HitboxPositionY, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
+                    rectangleHitbox = new Rectangle(character.HitboxPositionXRight, character.HitboxPositionYRight, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height));
+                    e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.HitboxPositionXRight, character.HitboxPositionYRight, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
                     
                 }
             }

@@ -55,7 +55,10 @@ namespace StreetFighterGame.Characters
             Attack(ActionState.AttackingI);
 
             startDrawHitbox();
-            HitboxPositionY = PositionY + (charHeight / 2 - CurrentHitboxImage.Height / 2);
+
+            HitboxPositionXLeft = PositionX - charWidth - CurrentHitboxImage.Width;
+            HitboxPositionXRight = charWidth + PositionX;
+            HitboxPositionYRight = HitboxPositionYLeft = PositionY + (charHeight / 2 - CurrentHitboxImage.Height / 2);
 
             frameTimer.Stop();
             frameTimer.Tick -= OnFrameTimerTick;
@@ -74,6 +77,10 @@ namespace StreetFighterGame.Characters
             {
                 var frames = HitboxAnimations[ActionState.AttackingI];
                 base.currentHitboxFrame = (currentHitboxFrame + 1) % frames.Count;
+
+                HitboxPositionXLeft = PositionX - charWidth - frames[currentHitboxFrame].Width;
+                HitboxPositionYRight = HitboxPositionYLeft = PositionY + (charHeight / 2 - frames[currentHitboxFrame].Height / 2);
+
                 base.CurrentHitboxImage = frames[currentHitboxFrame];
 
                 if (base.currentHitboxFrame == base.lastFrameOfHitboxAnimation)
