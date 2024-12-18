@@ -151,7 +151,7 @@ namespace StreetFighterGame
             if (e.KeyCode == Keys.J) player1AttackJ = false;
             if (e.KeyCode == Keys.K) player1AttackK = false;
             if (e.KeyCode == Keys.L) player1AttackL = false;
-            if (e.KeyCode == Keys.I) player1AttackI = false;
+            if (e.KeyCode == Keys.I || logicGame.Player1.DangDanhDungKo()) player1AttackI = false;
             // Handle key up events for Player 2
             if (e.KeyCode == Keys.Left || logicGame.Player2.DangDanhDungKo()) player2MoveLeft = false; logicGame.Player2.StopMoving();
             if (e.KeyCode == Keys.Right || logicGame.Player2.DangDanhDungKo()) player2MoveRight = false; logicGame.Player2.StopMoving();
@@ -194,14 +194,10 @@ namespace StreetFighterGame
 
             // Các hành động khác cho Player 1
             if (player1Jump) logicGame.Player1.Jump();
-            if (player1AttackJ) logicGame.Player1.Attack(attackType: ActionState.AttackingJ, logicGame.Player1, logicGame.Player2);
-            if (player1AttackK) logicGame.Player1.Attack(attackType: ActionState.AttackingK, logicGame.Player1, logicGame.Player2);
-            if (player1AttackL) logicGame.Player1.Attack(attackType: ActionState.AttackingL, logicGame.Player1, logicGame.Player2);
-            if (player1AttackI)
-            {
-                logicGame.Player1.Attack(attackType: ActionState.AttackingI, logicGame.Player1, logicGame.Player2);
-                logicGame.Player1.startDrawHitbox();
-            }
+            if (player1AttackJ) logicGame.Player1.Attack(attackType: ActionState.AttackingJ);
+            if (player1AttackK) logicGame.Player1.Attack(attackType: ActionState.AttackingK);
+            if (player1AttackL) logicGame.Player1.Attack(attackType: ActionState.AttackingL);
+            if (player1AttackI) logicGame.Player1.SpecicalSkill();
 
                 // Cập nhật di chuyển cho Player 2
                 if (player2MoveLeft)
@@ -230,14 +226,10 @@ namespace StreetFighterGame
 
             // Các hành động khác cho Player 2
             if (player2Jump) logicGame.Player2.Jump();
-            if (player2AttackJ) logicGame.Player2.Attack(attackType: ActionState.AttackingJ, logicGame.Player1, logicGame.Player2);
-            if (player2AttackK) logicGame.Player2.Attack(attackType: ActionState.AttackingK, logicGame.Player1, logicGame.Player2);
-            if (player2AttackL) logicGame.Player2.Attack(attackType: ActionState.AttackingL, logicGame.Player1, logicGame.Player2);
-            if (player2AttackI)
-            {
-                logicGame.Player2.Attack(attackType: ActionState.AttackingI, logicGame.Player1, logicGame.Player2);
-                logicGame.Player2.startDrawHitbox();
-            }
+            if (player2AttackJ) logicGame.Player2.Attack(attackType: ActionState.AttackingJ);
+            if (player2AttackK) logicGame.Player2.Attack(attackType: ActionState.AttackingK);
+            if (player2AttackL) logicGame.Player2.Attack(attackType: ActionState.AttackingL);
+            if (player2AttackI) logicGame.Player2.SpecicalSkill();
         }
 
         private void DrawCharacter(PaintEventArgs e, Character character, bool flip)
@@ -252,7 +244,7 @@ namespace StreetFighterGame
 
             // Lưu trạng thái đồ họa hiện tại
             GraphicsState state = e.Graphics.Save();
-            
+             
             // Nếu cần flip, thực hiện flip
             if (shouldFlip)
             {
@@ -300,13 +292,14 @@ namespace StreetFighterGame
                 else
                 {
                     rectangleHitbox = new Rectangle(character.PositionX + character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height / 2), (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height));
-                    e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.PositionX + character.charWidth, character.PositionY + (character.charHeight / 2 - character.CurrentHitboxImage.Height / 2), (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
+                    e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.PositionX + character.charWidth, character.HitboxPositionY, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
                     
                 }
             }
 
             if(CollisionHandler.KiemTra2ThangDanhNhau(character, character2, rectangleHitbox, character2.rectangle, animationManager, this))
             {
+                
                 animationManager.DrawImage(e.Graphics);
             }
 

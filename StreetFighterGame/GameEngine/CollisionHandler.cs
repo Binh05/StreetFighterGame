@@ -18,6 +18,7 @@ namespace StreetFighterGame.GameEngine
             if (Player1.DangDanhDungKo() && r1.IntersectsWith(r2))
             {
                 Player1.PlayHitSound();
+                //Console.WriteLine(Player2.PositionX - lechX);
                 animationManager.DrawMele(control, Player2.PositionX - lechX, Player2.PositionY);
                 Player2.TruMau(Player1.Dame);
                 Player2.PositionX = Math.Min(Player2.PositionX + lech1, 900);

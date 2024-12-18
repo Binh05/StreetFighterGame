@@ -54,32 +54,35 @@ namespace StreetFighterGame.GameEngine
         public Image Avatar { get; set; }  // Ảnh đại diện cho nhân vật
         public int charWidth { get; set; }
         public int charHeight { get; set; }
+        public int HitboxPositionX { get; set; }
+        public int HitboxPositionY { get; set; }
         public int hitboxWidth {  get; set; }
         public int hitboxHeight { get; set; }
+        protected int HitboxDurian {  get; set; }
         public Rectangle rectangle { get; set; }
 
         protected Dictionary<ActionState, List<Image>> Animations { get; set; }
         protected Dictionary<ActionState, List<Image>> HitboxAnimations { get; set; }
         public ActionState CurrentState { get; private set; } = ActionState.Standing;
 
-        private int currentFrame = 0;
-        private int currentHitboxFrame = 0;
+        protected int currentFrame = 0;
+        protected int currentHitboxFrame = 0;
         private int frameDelay = 0;
-        private int frameCounter = 0;
-        private int lastFrameOfAttackAnimation;
-        private int lastFrameOfHitboxAnimation;
+      //  private int frameCounter = 0;
+        protected int lastFrameOfAttackAnimation;
+        protected int lastFrameOfHitboxAnimation;
         private float jumpSpeed = 0f;
         private const float Gravity = 16f;
-        private int DefendYOffset = 25;
+       // private int DefendYOffset = 25;
         public bool isDefense, triggerAttack; // biến để kiểm tra có đang trong trạng thái attack hay ko
         public bool isAttacking, isJumpping, isHit;
 
         ChiSoSucManh cssm;
 
-        private Timer frameTimer; // Timer để thay đổi frame
-        private int frameInterval = 100; // Khoảng thời gian giữa các frame (ms)
+        protected Timer frameTimer; // Timer để thay đổi frame
+        protected int frameInterval = 100; // Khoảng thời gian giữa các frame (ms)
 
-        public Timer HitboxFrameTimer;
+        protected Timer HitboxFrameTimer;
 
         private Timer hitTimer;
         private int hitDuration = 100;
@@ -88,7 +91,7 @@ namespace StreetFighterGame.GameEngine
 
         //public string soundPath = ".\\sound\\PunchHit1.wav";
         private SoundPlayer soundPlayer;
-        protected Character(int startX, int startY, float scaleFactor, int mau, int d)
+        protected Character(int startX, int startY, float scaleFactor, int mau, int d, int hitboxDurian = 100)
         {
             PositionX = startX;
             BaseY = startY;
@@ -98,13 +101,14 @@ namespace StreetFighterGame.GameEngine
             HitboxAnimations = new Dictionary<ActionState, List<Image>>();
             isAttacking = isJumpping = isDefense = triggerAttack = isHit = false;
             CurrentHitboxImage = null;
+            HitboxDurian = hitboxDurian;
 
             frameTimer = new Timer { Interval = frameInterval };
             frameTimer.Tick += OnFrameTimerTick;
             frameTimer.Start();
 
-            HitboxFrameTimer = new Timer { Interval = 100 };
-            HitboxFrameTimer.Tick += OnHitboxFrameTimerTick;
+            HitboxFrameTimer = new Timer { Interval = HitboxDurian };
+            //HitboxFrameTimer.Tick += OnHitboxFrameTimerTick;
 
             hitTimer = new Timer { Interval = hitDuration };
             hitTimer.Tick += OnHitTimerTick;
@@ -112,13 +116,8 @@ namespace StreetFighterGame.GameEngine
             SetChiSoSucManh(mau, d);
             //LoadHitSound();
         }
-        public void Draw(Graphics g)
-        {
-            if (CurrentImage != null)
-            {
-                g.DrawImage(CurrentImage, PositionX, PositionY, CurrentImage.Width * ScaleFactor, CurrentImage.Height * ScaleFactor);
-            }
-        }
+        public abstract void SpecicalSkill();
+
         public void LoadHitSound(string soundPath)
         {
             string fullPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, soundPath);
@@ -135,7 +134,7 @@ namespace StreetFighterGame.GameEngine
         {
             soundPlayer?.Play(); // Phát âm thanh nếu đã nạp
         }
-        private void OnFrameTimerTick(object sender, EventArgs e)
+        protected void OnFrameTimerTick(object sender, EventArgs e)
         {
             // Chỉ xử lý nếu trạng thái hiện tại có animation
             if (Animations.ContainsKey(CurrentState) && Animations[CurrentState].Count > 0)
@@ -154,7 +153,7 @@ namespace StreetFighterGame.GameEngine
                 }
             }
         }
-        private void OnHitboxFrameTimerTick(object sender, EventArgs e)
+        /*private void OnHitboxFrameTimerTick(object sender, EventArgs e)
         {
             if (HitboxAnimations.ContainsKey(ActionState.AttackingI) && HitboxAnimations[ActionState.AttackingI].Count > 0)
             {
@@ -170,14 +169,14 @@ namespace StreetFighterGame.GameEngine
                     HitboxFrameTimer.Stop();
                 }
             }
-        } 
+        } */
         public void startDrawHitbox()
         {
             
             CurrentHitboxImage = HitboxAnimations[ActionState.AttackingI][0];
             lastFrameOfHitboxAnimation = HitboxAnimations[ActionState.AttackingI].Count - 1; // lấy frame để kiểm tra tấn công
             
-            HitboxFrameTimer.Start();
+            //HitboxFrameTimer.Start();
         }
         private void OnHitTimerTick(object sender, EventArgs e)
         {
@@ -228,7 +227,7 @@ namespace StreetFighterGame.GameEngine
             if (isHit) return;
             if (isJumpping) HandleJumping();
         }
-        public void Attack(ActionState attackType, Character player1, Character player2)
+        public void Attack(ActionState attackType)
         {
             ChangeState(attackType);
             PositionX = Math.Min(PositionX + (IsFacingLeft ? -2 : 2), 900);

@@ -15,15 +15,15 @@ namespace StreetFighterGame.GameEngine
         public List<Image> mele {  get; set; }
         private int currentFrame;
         private int positionXMele, positionYMele;
-        private PaintEventArgs currentGraphics;
+        //private PaintEventArgs currentGraphics;
         private Control renderControl;
 
         private Timer meleTimer;
 
         public AnimationManager()
         {
-            mele = LoadImages(".\\Effect", 7, "attack_0");
-            meleTimer = new Timer { Interval = 20 };
+            mele = LoadImages(".\\Effect", 7, "VaCham_2");
+            meleTimer = new Timer { Interval = 32 };
             meleTimer.Tick += OnMeleTimerTick;
         }
         private void OnMeleTimerTick(object sender, EventArgs e)
@@ -42,6 +42,7 @@ namespace StreetFighterGame.GameEngine
             renderControl = control;
 
             // Cập nhật vị trí vẽ
+            //Console.WriteLine($"mele:  {positionX}");
             positionXMele = positionX;
             positionYMele = positionY;
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Windows.Forms;
 
 namespace StreetFighterGame.Characters
 {
@@ -35,6 +36,10 @@ namespace StreetFighterGame.Characters
             });
             Name = "Kyo";
             LoadAvatar(".\\Kyo\\Kyo_9000-1.png");
+        }
+        public override void SpecicalSkill()
+        {
+            throw new System.NotImplementedException();
         }
 
         //public override void Attack(ActionState attackType)

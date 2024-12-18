@@ -1,13 +1,15 @@
 ﻿using StreetFighterGame.GameEngine;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Windows.Forms;
 
 namespace StreetFighterGame.Characters
 {
     public class Goku : Character
     {
-        public Goku(int startX, int startY, float scaleFactor) : base(startX, startY, scaleFactor, 1000, 1)
+        public Goku(int startX, int startY, float scaleFactor) : base(startX, startY, scaleFactor, 1000, 1, 100)
         {
             // Tải hoạt ảnh cho Goku với ActionState
             LoadAnimations(".\\GokuMUI", new Dictionary<ActionState, string>
@@ -46,8 +48,66 @@ namespace StreetFighterGame.Characters
 
             Name = "Goku";
             LoadAvatar(".\\GokuMUI\\GokuMUI_9000-3.png");
+            base.HitboxDurian = 50;
+        }
+        public override void SpecicalSkill()
+        {
+            Attack(ActionState.AttackingI);
+
+            startDrawHitbox();
+            HitboxPositionY = PositionY + (charHeight / 2 - CurrentHitboxImage.Height / 2);
+
+            frameTimer.Stop();
+            frameTimer.Tick -= OnFrameTimerTick;
+            frameTimer.Tick -= OnFrameSpecicalSkillTimerTick;
+            frameTimer.Tick += OnFrameSpecicalSkillTimerTick;
+            frameTimer.Start();
+
+            HitboxFrameTimer.Tick -= OnSpecicalSkillTick;
+            HitboxFrameTimer.Tick += OnSpecicalSkillTick;
+            HitboxFrameTimer.Start();
         }
 
+        protected void OnSpecicalSkillTick(object sender, EventArgs e)
+        {
+            if (HitboxAnimations.ContainsKey(ActionState.AttackingI) && HitboxAnimations[ActionState.AttackingI].Count > 0)
+            {
+                var frames = HitboxAnimations[ActionState.AttackingI];
+                base.currentHitboxFrame = (currentHitboxFrame + 1) % frames.Count;
+                base.CurrentHitboxImage = frames[currentHitboxFrame];
+
+                if (base.currentHitboxFrame == base.lastFrameOfHitboxAnimation)
+                {
+                    currentHitboxFrame = 0;
+                    lastFrameOfHitboxAnimation = 0;
+                    HitboxFrameTimer.Stop();
+                }
+            }
+        }
+        protected void OnFrameSpecicalSkillTimerTick(object sender, EventArgs e)
+        {
+            if (Animations.ContainsKey(CurrentState) && Animations[CurrentState].Count > 0)
+            {
+                var frames = Animations[CurrentState];
+                base.currentFrame = (base.currentFrame + 1) % frames.Count;
+                if (base.currentFrame == base.lastFrameOfAttackAnimation && base.currentHitboxFrame != base.lastFrameOfHitboxAnimation) base.currentFrame = 3;
+                base.CurrentImage = frames[base.currentFrame];
+
+                // Nếu là trạng thái tấn công, kiểm tra nếu đến frame cuối thì ngừng tấn công
+                if (IsAttackAction(CurrentState) && base.currentFrame == base.lastFrameOfAttackAnimation && base.currentHitboxFrame == base.lastFrameOfHitboxAnimation)
+                {
+                    isAttacking = triggerAttack = false;
+                    CurrentHitboxImage = null;
+
+                    frameTimer.Stop();
+                    frameTimer.Tick -= OnFrameSpecicalSkillTimerTick;
+                    StopAttacking();
+                    frameTimer.Tick += OnFrameTimerTick;
+                    frameTimer.Start();
+
+                }
+            }
+        }
         //public override void Attack(ActionState attackType)
         //{
         //    if (CurrentState != ActionState.Jumping)
