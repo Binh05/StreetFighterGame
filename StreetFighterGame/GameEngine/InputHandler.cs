@@ -105,13 +105,13 @@ namespace StreetFighterGame.GameEngine
             }
         }
 
-        public void Update()
+      /*  public void Update()
         {
             // Process input
             //ProcessInput();
             Player.Update();
 
-        }
+        }*/
 
         /*public void ProcessInput()
         {

@@ -15,7 +15,7 @@ namespace StreetFighterGame.GameEngine
         {
             int lech1 = (Player1.IsFacingLeft) ? -2 : 2;
             int lechX = (Player2.IsFacingLeft) ? (int)(Player2.charWidth * 1.5f) : 0;
-            if (Player1.DangDanhDungKo() && r1.IntersectsWith(r2))
+            if (Player1.DangDanhDungKo() && Colliding(r1, r2))
             {
                 Player1.PlayHitSound();
                 //Console.WriteLine(Player2.PositionX - lechX);
@@ -26,6 +26,10 @@ namespace StreetFighterGame.GameEngine
                 return true;
             }
             return false;
+        }
+        public static bool Colliding(Rectangle r1, Rectangle r2)
+        {
+            return r1.IntersectsWith(r2);
         }
     }
 }

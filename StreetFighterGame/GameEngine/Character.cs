@@ -63,6 +63,7 @@ namespace StreetFighterGame.GameEngine
         public int hitboxHeight { get; set; }
         protected int HitboxDurian {  get; set; }
         public Rectangle rectangle { get; set; }
+        public Rectangle rectangleEneme { get; set; }
         //public Rectangle rectangleHitbox {  get; set; }
 
         protected Dictionary<ActionState, List<Image>> Animations { get; set; }
@@ -226,10 +227,11 @@ namespace StreetFighterGame.GameEngine
             }
             return images;
         }
-        public virtual void Update()
+        public virtual void Update(Rectangle eneme)
         {
             charWidth = (int)(CurrentImage.Width * ScaleFactor);
             charHeight = (int)(CurrentImage.Height * ScaleFactor);
+            rectangleEneme = eneme;
             if (isHit) return;
             if (isJumpping) HandleJumping();
         }
@@ -443,6 +445,10 @@ namespace StreetFighterGame.GameEngine
         public float Dame
         {
             get { return cssm.dame; }
+        }
+        public bool Colliding()
+        {
+            return CollisionHandler.Colliding(rectangle, rectangleEneme);
         }
     }
 }
