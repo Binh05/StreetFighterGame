@@ -445,11 +445,15 @@ namespace StreetFighterGame.GameEngine
         }
         public void HoiMana(float mana)
         {
-            cssm.nangLuongHienTai += mana;
+            cssm.nangLuongHienTai = Math.Min(cssm.nangLuongHienTai += mana, cssm.nangLuonToiDa);
         }
         public void TruMana(float mana)
         {
             cssm.nangLuongHienTai -= mana;
+        }
+        public ActionState AttackType
+        {
+            get { return CurrentState; }
         }
         public float Dame
         {
