@@ -51,12 +51,13 @@ namespace StreetFighterGame.Characters
 
             Name = "Zenitsu";
             LoadAvatar(".\\Zenitsu\\Zenitsu_10000-0.png");
+            manaSkillI = 50;
         }
 
         public override void SpecicalSkill()
         {
             Attack(ActionState.AttackingI);
-
+            TruMana(50);
             startDrawHitbox();
 
             HitboxPositionXLeft = PositionX - charWidth / 2 - CurrentHitboxImage.Width / 2;

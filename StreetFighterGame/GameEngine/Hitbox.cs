@@ -1,55 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
-
-using System.Windows.Forms;
 using System.Threading.Tasks;
-using System.Drawing;
+using System.Windows.Forms;
 
 namespace StreetFighterGame.GameEngine
 {
-    internal class Hitbox
+    public class Hitbox
     {
+        public Control renderControl { get; set; }
+        public List<Image> Images { get; set; }
         public int PositionX { get; set; }
         public int PositionY { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
-        public bool isActive { get; private set; }
-        public int Lifetime { get; private set; }
-        public List<Image> HitboxImage { get; private set; }
+        public float ScaleX { get; set; }
+        public float ScaleY { get; set; }
+        private Timer renderTimer { get; set; }
 
-        private Timer LifetimeTimer;
-        public Hitbox(int positionX, int positionY, int lifetime, List<Image> hitboxImage)
+        private int currentFrame;
+        public Hitbox(Control control, List<Image> images, int positionX, int positionY, float scaleX, float scaleY, int interval)
         {
+            renderControl = control;
+            Images = images;
             PositionX = positionX;
             PositionY = positionY;
-            Lifetime = lifetime;
-            isActive = true;
-            HitboxImage = hitboxImage;
+            ScaleX = scaleX;
+            ScaleY = scaleY;
+            currentFrame = 0;
 
-            LifetimeTimer = new Timer { Interval = lifetime };
-            LifetimeTimer.Tick += (sender, e) => { isActive = false; LifetimeTimer.Stop(); };
-            LifetimeTimer.Start();
-            
+            renderTimer = new Timer { Interval = interval };
+            renderTimer.Tick += OnTick;
+
+            renderControl.Paint += OnPaint;
         }
-        public void Draw(Graphics g, bool isCircle = false)
+        public void StartDraw()
         {
-            if (!isActive) return;
-
-            if (isCircle)
-            {
-                g.FillEllipse(Brushes.Red, PositionX, PositionY, Width, Height);
-            }
-            else
-            {
-                using (SolidBrush redBrush = new SolidBrush(Color.Red))
-                {
-                    g.FillRectangle(redBrush, PositionX, PositionY, Width, Height); // Tô đầy hitbox
-                }
-                /*g.FillRectangle(Brushes.Red, PositionX, PositionY, Width, Height);*/
-            }
+            currentFrame = 0;
+            renderTimer.Start();
         }
-        
+        private void OnPaint(object sender, PaintEventArgs e)
+        {
+            if (Images.Count == 0 || currentFrame >= Images.Count) return;
+
+            // Vẽ hình ảnh hiện tại
+            var image = Images[currentFrame];
+            e.Graphics.DrawImage(image, PositionX, PositionY, (int)(image.Width * ScaleX), (int)(image.Height * ScaleY));
+        }
+        private void OnTick(object sender, EventArgs e)
+        {
+            if (Images.Count == 0 || renderControl == null) return;
+
+            // Yêu cầu vẽ lại control
+            renderControl.Invalidate(new Rectangle(PositionX, PositionY, Images[currentFrame].Width, Images[currentFrame].Height));
+
+            if (currentFrame == Images.Count - 1)
+            {
+                renderTimer.Stop();
+                renderControl.Paint -= OnPaint;
+            }
+            // Chuyển sang frame tiếp theo
+            currentFrame = (currentFrame + 1) % Images.Count;
+        }
     }
 }

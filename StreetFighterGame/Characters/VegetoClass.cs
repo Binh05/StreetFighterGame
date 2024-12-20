@@ -49,13 +49,13 @@ namespace StreetFighterGame.Characters
             Name = "Vegeto";
             LoadAvatar(".\\Vegeto\\Vegeto_9000-4.png");
             LoadHitSound(".\\sound\\PunchHit1.wav");
-
+            manaSkillI = 50;
             
         }
         public override void SpecicalSkill()
         {
             Attack(ActionState.AttackingI);
-
+            TruMana(50);
             startDrawHitbox();
 
             HitboxPositionXLeft = PositionX - charWidth - CurrentHitboxImage.Width;

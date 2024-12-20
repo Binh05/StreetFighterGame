@@ -64,6 +64,7 @@ namespace StreetFighterGame.GameEngine
         protected int HitboxDurian {  get; set; }
         public Rectangle rectangle { get; set; }
         public Rectangle rectangleEneme { get; set; }
+        public int manaSkillI { get; protected set; }
         //public Rectangle rectangleHitbox {  get; set; }
 
         protected Dictionary<ActionState, List<Image>> Animations { get; set; }
@@ -442,9 +443,17 @@ namespace StreetFighterGame.GameEngine
             Console.WriteLine(cssm.mauHienTai / cssm.mauToiDa);*/
             cssm.mauHienTai -= dame;
         }
+        public void TruMana(float mana)
+        {
+            cssm.nangLuongHienTai -= mana;
+        }
         public float Dame
         {
             get { return cssm.dame; }
+        }
+        public float Mana
+        {
+            get { return cssm.nangLuongHienTai; }
         }
         public bool Colliding()
         {

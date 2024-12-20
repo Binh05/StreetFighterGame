@@ -32,6 +32,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(StreetFighterGame));
             this.GameTimer = new System.Windows.Forms.Timer(this.components);
             this.labelWiner = new System.Windows.Forms.Label();
+            this.LbCountdown = new System.Windows.Forms.Label();
+            this.Lbstart = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // GameTimer
@@ -53,11 +55,33 @@
             this.labelWiner.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.labelWiner.Click += new System.EventHandler(this.labelWiner_Click);
             // 
+            // LbCountdown
+            // 
+            this.LbCountdown.AutoSize = true;
+            this.LbCountdown.Font = new System.Drawing.Font("Microsoft Sans Serif", 28.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LbCountdown.Location = new System.Drawing.Point(632, 45);
+            this.LbCountdown.Name = "LbCountdown";
+            this.LbCountdown.Size = new System.Drawing.Size(75, 54);
+            this.LbCountdown.TabIndex = 1;
+            this.LbCountdown.Text = "60";
+            // 
+            // Lbstart
+            // 
+            this.Lbstart.AutoSize = true;
+            this.Lbstart.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Lbstart.Location = new System.Drawing.Point(624, 147);
+            this.Lbstart.Name = "Lbstart";
+            this.Lbstart.Size = new System.Drawing.Size(83, 91);
+            this.Lbstart.TabIndex = 2;
+            this.Lbstart.Text = "3";
+            // 
             // StreetFighterGame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1293, 583);
+            this.Controls.Add(this.Lbstart);
+            this.Controls.Add(this.LbCountdown);
             this.Controls.Add(this.labelWiner);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -66,6 +90,7 @@
             this.Text = "Street Fighter 2.0";
             this.Load += new System.EventHandler(this.StreetFighterGame_Load_1);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -73,6 +98,8 @@
 
         private System.Windows.Forms.Timer GameTimer;
         private System.Windows.Forms.Label labelWiner;
+        private System.Windows.Forms.Label LbCountdown;
+        private System.Windows.Forms.Label Lbstart;
     }
 }
 

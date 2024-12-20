@@ -23,6 +23,11 @@ namespace StreetFighterGame
         private int idChar1, idChar2;
         private Timer animationTimer;
         private AnimationManager animationManager = new AnimationManager();
+        private Audio audio;
+        private int countdownValue = 60;
+        private Timer CountdownTimer;
+        private Timer CountdownStart;
+        private int StartTimer = 3;
 
         // Thêm các biến kiểm tra trạng thái các phím của người chơi
         private bool player1MoveLeft, player1MoveRight, player1Jump, player1AttackJ, player1AttackK, player1AttackL, player1AttackI;
@@ -32,14 +37,52 @@ namespace StreetFighterGame
         {
 
         }
-
+        private void InitializeCountdown()
+        {
+            CountdownTimer = new Timer { Interval = 1000 };
+            CountdownTimer.Tick += (sender, e) =>
+            {
+                countdownValue--;
+                UpdateLabel();
+                if (countdownValue <= 0)
+                {
+                    CountdownTimer.Stop();
+                    
+                }
+            };
+        }
+        private void InitializeCountdownStart()
+        {
+            CountdownStart = new Timer
+            {
+                Interval = 1000
+            };
+            CountdownStart.Tick += (sender, e) =>
+            {
+                StartTimer--;
+                if (StartTimer == -1)
+                {
+                    Lbstart.Visible = false;
+                    CountdownTimer.Start();
+                    CountdownStart.Stop();
+                }
+                else if (StartTimer == 0) Lbstart.Text = "Fight";
+                else Lbstart.Text = StartTimer.ToString();
+            };
+        }
+        private void UpdateLabel()
+        {
+            // Hiển thị giá trị đếm ngược trên Label
+            LbCountdown.Text = countdownValue.ToString();
+        }
         public StreetFighterGame(string s1, string s2, int idChar1, int idChar2, string mappath)
         {
             InitializeComponent();
+            InitializeCountdownStart();
+            InitializeCountdown();
             SetUpForm(s1, s2, idChar1, idChar2, mappath);
-
+            audio = new Audio(this);
         }
-
         private void SetUpForm(string s1, string s2, int _idChar1, int _idChar2, string mappath)
         {
             labelWiner.Visible = false;
@@ -81,6 +124,7 @@ namespace StreetFighterGame
             this.KeyDown += new KeyEventHandler(OnKeyDown);
             this.KeyUp += new KeyEventHandler(OnKeyUp);
             this.Paint += new PaintEventHandler(OnPaint);
+            CountdownStart.Start();
         }
 
         private void OnAnimationTick(object sender, EventArgs e)
@@ -100,25 +144,21 @@ namespace StreetFighterGame
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
             // Handle key down events for Player 1
-            if (!logicGame.Player1.isHit && !logicGame.Player1.DangDanhDungKo())
+            if (e.KeyCode == Keys.A) player1MoveLeft = true;
+            if (e.KeyCode == Keys.D)
             {
-                if (e.KeyCode == Keys.A) player1MoveLeft = true;
-                if (e.KeyCode == Keys.D)
-                {
-                    player1MoveRight = true;
-                    if (player1MoveLeft) player1MoveLeft = false;// đảm bảo chỉ có 1 move là true, vì khi 2 true sẽ gặp bug logic vì có 2state được change
-                }
-
-                if (e.KeyCode == Keys.W) player1Jump = true;
-                if (e.KeyCode == Keys.S) logicGame.Player1.Defend(true);
-                if (e.KeyCode == Keys.J) player1AttackJ = true;
-                if (e.KeyCode == Keys.K) player1AttackK = true;
-                if (e.KeyCode == Keys.L) player1AttackL = true;
-                if (e.KeyCode == Keys.I) player1AttackI = true;
-                if (e.KeyCode == Keys.N) logicGame.Player1.PlayHitSound();
+                player1MoveRight = true;
+                if (player1MoveLeft) player1MoveLeft = false;// đảm bảo chỉ có 1 move là true, vì khi 2 true sẽ gặp bug logic vì có 2state được change
             }
 
-            if (logicGame.Player2.isHit || logicGame.Player2.DangDanhDungKo()) return;
+            if (e.KeyCode == Keys.W) player1Jump = true;
+            if (e.KeyCode == Keys.S) logicGame.Player1.Defend(true);
+            if (e.KeyCode == Keys.J) player1AttackJ = true;
+            if (e.KeyCode == Keys.K) player1AttackK = true;
+            if (e.KeyCode == Keys.L) player1AttackL = true;
+            if (e.KeyCode == Keys.I) player1AttackI = true;
+            if (e.KeyCode == Keys.B) audio.PlaySound();
+            
 
             // Handle key down events for Player 2
             if (e.KeyCode == Keys.Left) player2MoveLeft = true;
@@ -133,7 +173,6 @@ namespace StreetFighterGame
             if (e.KeyCode == Keys.NumPad2) player2AttackK = true;
             if (e.KeyCode == Keys.NumPad3) player2AttackL = true;
             if (e.KeyCode == Keys.NumPad5) player2AttackI = true;
-            if (e.KeyCode == Keys.M) Console.WriteLine(logicGame.Player2.IsFacingLeft ? "left" : "Right");
         }
 
         private void StreetFighterGame_Load_1(object sender, EventArgs e)
@@ -144,17 +183,17 @@ namespace StreetFighterGame
         private void OnKeyUp(object sender, KeyEventArgs e)
         {
             // Handle key up events for Player 1
-            if (e.KeyCode == Keys.A || logicGame.Player1.DangDanhDungKo()) player1MoveLeft = false; logicGame.Player1.StopMoving();
-            if (e.KeyCode == Keys.D || logicGame.Player1.DangDanhDungKo()) player1MoveRight = false; logicGame.Player1.StopMoving();
+            if (e.KeyCode == Keys.A) player1MoveLeft = false; logicGame.Player1.StopMoving();
+            if (e.KeyCode == Keys.D) player1MoveRight = false; logicGame.Player1.StopMoving();
             if (e.KeyCode == Keys.W) player1Jump = false;
             if (e.KeyCode == Keys.S) logicGame.Player1.Defend(false);
             if (e.KeyCode == Keys.J) player1AttackJ = false;
             if (e.KeyCode == Keys.K) player1AttackK = false;
             if (e.KeyCode == Keys.L) player1AttackL = false;
-            if (e.KeyCode == Keys.I || logicGame.Player1.DangDanhDungKo()) player1AttackI = false;
+            if (e.KeyCode == Keys.I) player1AttackI = false;
             // Handle key up events for Player 2
-            if (e.KeyCode == Keys.Left || logicGame.Player2.DangDanhDungKo()) player2MoveLeft = false; logicGame.Player2.StopMoving();
-            if (e.KeyCode == Keys.Right || logicGame.Player2.DangDanhDungKo()) player2MoveRight = false; logicGame.Player2.StopMoving();
+            if (e.KeyCode == Keys.Left) player2MoveLeft = false; logicGame.Player2.StopMoving();
+            if (e.KeyCode == Keys.Right) player2MoveRight = false; logicGame.Player2.StopMoving();
             if (e.KeyCode == Keys.Up) player2Jump = false;
             if (e.KeyCode == Keys.Down) logicGame.Player2.Defend(false);
             if (e.KeyCode == Keys.NumPad1) player2AttackJ = false;
@@ -166,41 +205,46 @@ namespace StreetFighterGame
         private void UpdatePlayerInput()
         {
             // Cập nhật di chuyển cho Player 1
-            if (player1MoveLeft)
+            if (!logicGame.Player1.isHit && !logicGame.Player1.DangDanhDungKo())
             {
-                if (!logicGame.Player1.IsFacingLeft) logicGame.Player1.PositionX += logicGame.Player1.charWidth;
-                logicGame.Player1.MoveLeft();
-                logicGame.Player1.IsMovingLeft = true;
-                logicGame.Player1.IsFacingLeft = true;
-            }
-
-            if (player1MoveRight)
-            {
-                if (logicGame.Player1.IsFacingLeft) logicGame.Player1.PositionX -= logicGame.Player1.charWidth;
-                logicGame.Player1.MoveRight();
-                logicGame.Player1.IsMovingLeft = false;
-                logicGame.Player1.IsFacingLeft = false;
-            }
-
-            // Chỉ cập nhật hướng đối mặt nếu cả hai người chơi không di chuyển
-            if (!player1MoveLeft && !player1MoveRight)
-            {
-                if (!logicGame.Player1.IsFacingLeft && logicGame.Player1.PositionX > logicGame.Player2.PositionX)
+                if (player1MoveLeft)
                 {
+                    if (!logicGame.Player1.IsFacingLeft) logicGame.Player1.PositionX += logicGame.Player1.charWidth;
+                    logicGame.Player1.MoveLeft();
+                    logicGame.Player1.IsMovingLeft = true;
                     logicGame.Player1.IsFacingLeft = true;
-                    logicGame.Player1.PositionX += logicGame.Player1.charWidth;
                 }
+
+                if (player1MoveRight)
+                {
+                    if (logicGame.Player1.IsFacingLeft) logicGame.Player1.PositionX -= logicGame.Player1.charWidth;
+                    logicGame.Player1.MoveRight();
+                    logicGame.Player1.IsMovingLeft = false;
+                    logicGame.Player1.IsFacingLeft = false;
+                }
+
+                // Chỉ cập nhật hướng đối mặt nếu cả hai người chơi không di chuyển
+                if (!player1MoveLeft && !player1MoveRight)
+                {
+                    if (!logicGame.Player1.IsFacingLeft && logicGame.Player1.PositionX > logicGame.Player2.PositionX)
+                    {
+                        logicGame.Player1.IsFacingLeft = true;
+                        logicGame.Player1.PositionX += logicGame.Player1.charWidth;
+                    }
+                }
+
+                // Các hành động khác cho Player 1
+                if (player1Jump) logicGame.Player1.Jump();
+                if (player1AttackJ) logicGame.Player1.Attack(attackType: ActionState.AttackingJ);
+                if (player1AttackK) logicGame.Player1.Attack(attackType: ActionState.AttackingK);
+                if (player1AttackL) logicGame.Player1.Attack(attackType: ActionState.AttackingL);
+                if (player1AttackI && logicGame.Player1.Mana >= logicGame.Player1.manaSkillI) logicGame.Player1.SpecicalSkill();
             }
 
-            // Các hành động khác cho Player 1
-            if (player1Jump) logicGame.Player1.Jump();
-            if (player1AttackJ) logicGame.Player1.Attack(attackType: ActionState.AttackingJ);
-            if (player1AttackK) logicGame.Player1.Attack(attackType: ActionState.AttackingK);
-            if (player1AttackL) logicGame.Player1.Attack(attackType: ActionState.AttackingL);
-            if (player1AttackI) logicGame.Player1.SpecicalSkill();
+            // Cập nhật di chuyển cho Player 2
+            if (logicGame.Player2.isHit || logicGame.Player2.DangDanhDungKo()) return;
 
-                // Cập nhật di chuyển cho Player 2
-                if (player2MoveLeft)
+            if (player2MoveLeft)
             {
                 if (!logicGame.Player2.IsFacingLeft) logicGame.Player2.PositionX += logicGame.Player2.charWidth;
                 logicGame.Player2.MoveLeft();
@@ -229,7 +273,7 @@ namespace StreetFighterGame
             if (player2AttackJ) logicGame.Player2.Attack(attackType: ActionState.AttackingJ);
             if (player2AttackK) logicGame.Player2.Attack(attackType: ActionState.AttackingK);
             if (player2AttackL) logicGame.Player2.Attack(attackType: ActionState.AttackingL);
-            if (player2AttackI) logicGame.Player2.SpecicalSkill();
+            if (player2AttackI && logicGame.Player2.Mana >= logicGame.Player2.manaSkillI) logicGame.Player2.SpecicalSkill();
         }
 
         private void DrawCharacter(PaintEventArgs e, Character character, bool flip)
@@ -305,7 +349,6 @@ namespace StreetFighterGame
 
             if(CollisionHandler.KiemTra2ThangDanhNhau(character, character2, rectangleHitbox, character2.rectangle, animationManager, this))
             {
-                
                 animationManager.DrawImage(e.Graphics);
             }
 
@@ -466,10 +509,14 @@ namespace StreetFighterGame
             }
             return healthPercentage;
         }
+        private void EndGame()
+        {
 
+        }
         private void StreetFighterGame_Load(object sender, EventArgs e)
         {
             // Empty, currently no special loading logic needed
         }
+
     }
 }

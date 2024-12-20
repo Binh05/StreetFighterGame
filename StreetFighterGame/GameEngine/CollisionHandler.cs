@@ -14,15 +14,24 @@ namespace StreetFighterGame.GameEngine
         public static bool KiemTra2ThangDanhNhau(Character Player1, Character Player2, Rectangle r1, Rectangle r2, AnimationManager animationManager, Control control)
         {
             int lech1 = (Player1.IsFacingLeft) ? -2 : 2;
-            int lechX = (Player2.IsFacingLeft) ? (int)(Player2.charWidth * 1.5f) : 0;
+            int lechX = (Player2.IsFacingLeft) ? (int)(Player2.charWidth * 2.5f) : Player2.charWidth;
+            int lechDefense = (Player2.IsFacingLeft) ? (int)(Player2.charWidth * 1.5f) : 0;
             if (Player1.DangDanhDungKo() && Colliding(r1, r2))
             {
-                Player1.PlayHitSound();
-                //Console.WriteLine(Player2.PositionX - lechX);
-                animationManager.DrawMele(control, Player2.PositionX - lechX, Player2.PositionY - Player2.charHeight / 3);
-                Player2.TruMau(Player1.Dame);
+                if (Player2.isDefense)
+                {
+                    animationManager.DrawDefense(control, Player2.PositionX - lechDefense, Player2.PositionY - Player2.charHeight / 2 + 20, 0.3f, 0.3f);
+                }
+                else
+                {
+                    Player1.PlayHitSound();
+                    //Console.WriteLine(Player2.PositionX - lechX);
+                    animationManager.DrawMele(control, Player2.PositionX - lechX, Player2.PositionY - Player2.charHeight, 2, 2);
+                    Player2.TruMau(Player1.Dame);
+                    
+                    Player2.XuLiKhiBiDanh();
+                }
                 Player2.PositionX = Math.Min(Player2.PositionX + lech1, 900);
-                Player2.XuLiKhiBiDanh();
                 return true;
             }
             return false;

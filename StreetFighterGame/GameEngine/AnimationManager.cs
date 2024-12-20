@@ -12,49 +12,71 @@ namespace StreetFighterGame.GameEngine
 {
     internal class AnimationManager
     {
+        public List<Image> Images {  get; set; }
         public List<Image> mele {  get; set; }
+        public List<Image> defense { get; set; }
+
         private int currentFrame;
-        private int positionXMele, positionYMele;
+        private int PositionX, PositionY;
+
+        private float ScaleX = 1;
+        private float ScaleY = 1;
         //private PaintEventArgs currentGraphics;
         private Control renderControl;
 
-        private Timer meleTimer;
+        private Timer DrawTimer;
 
         public AnimationManager()
         {
             mele = LoadImages(".\\Effect", 7, "VaCham_2");
-            meleTimer = new Timer { Interval = 32 };
-            meleTimer.Tick += OnMeleTimerTick;
+            defense = LoadImages(".\\Effect", 5, "Ryu_7108");
+            DrawTimer = new Timer { Interval = 32 };
+            DrawTimer.Tick += OnMeleTimerTick;
         }
         private void OnMeleTimerTick(object sender, EventArgs e)
         {
-            if (mele.Count == 0 || renderControl == null) return;
+            if (Images.Count == 0 || renderControl == null) return;
 
             // Yêu cầu vẽ lại control
-            renderControl.Invalidate(new Rectangle(positionXMele, positionYMele, mele[currentFrame].Width, mele[currentFrame].Height));
+            renderControl.Invalidate(new Rectangle(PositionX, PositionY, (int)(Images[currentFrame].Width * ScaleX), (int)(Images[currentFrame].Height * ScaleY)));
 
-            if (currentFrame == mele.Count - 1) meleTimer.Stop();
+            if (currentFrame == Images.Count - 1) DrawTimer.Stop();
             // Chuyển sang frame tiếp theo
-            currentFrame = (currentFrame + 1) % mele.Count;
+            currentFrame = (currentFrame + 1) % Images.Count;
         }
-        public void DrawMele(Control control, int positionX, int positionY)
+        public void DrawMele(Control control, int positionX, int positionY, float scaleX = 1, float scaleY = 1)
+        {
+            SetUp(control, positionX, positionY, scaleX, scaleY);
+            Images = mele; 
+            // Bắt đầu Timer
+            DrawTimer.Start();
+        }
+        public void DrawDefense(Control control, int positionX, int positionY, float scaleX = 1, float scaleY = 1)
+        {
+            SetUp(control, positionX, positionY, scaleX, scaleX);
+            Images = defense;
+            // Bắt đầu Timer
+            DrawTimer.Start();
+        }
+        private void SetUp(Control control, int positionX, int positionY, float scaleX = 1, float scaleY = 1)
         {
             renderControl = control;
 
             // Cập nhật vị trí vẽ
             //Console.WriteLine($"mele:  {positionX}");
-            positionXMele = positionX;
-            positionYMele = positionY;
+            PositionX = positionX;
+            PositionY = positionY;
 
-            // Bắt đầu Timer
-            meleTimer.Start();
+            ScaleX = scaleX;
+            ScaleY = scaleY;
         }
         public void DrawImage(Graphics g)
         {
-            if (mele.Count > 0)
+            if (Images.Count > 0)
             {
                 // Vẽ frame hiện tại
-                g.DrawImage(mele[currentFrame], positionXMele, positionYMele, mele[currentFrame].Width, mele[currentFrame].Height);
+                if (currentFrame > Images.Count - 1) currentFrame = 0;
+                g.DrawImage(Images[currentFrame], PositionX, PositionY, (int)(Images[currentFrame].Width * ScaleX), (int)(Images[currentFrame].Height * ScaleY));
             }
         }
         private List<Image> LoadImages(string folderPath, int count, string filePrefix)
