@@ -31,6 +31,7 @@ namespace StreetFighterGame.GameEngine
                     
                     Player2.XuLiKhiBiDanh();
                 }
+                Player1.HoiMana(10);
                 Player2.PositionX = Math.Min(Player2.PositionX + lech1, 900);
                 return true;
             }

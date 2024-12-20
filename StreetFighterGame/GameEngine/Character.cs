@@ -443,6 +443,10 @@ namespace StreetFighterGame.GameEngine
             Console.WriteLine(cssm.mauHienTai / cssm.mauToiDa);*/
             cssm.mauHienTai -= dame;
         }
+        public void HoiMana(float mana)
+        {
+            cssm.nangLuongHienTai += mana;
+        }
         public void TruMana(float mana)
         {
             cssm.nangLuongHienTai -= mana;
