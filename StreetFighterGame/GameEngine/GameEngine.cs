@@ -27,7 +27,7 @@ namespace StreetFighterGame.GameEngine
             // Tạo nhân vật cho Player 1
             Player1 = CharacterFactory.CreateCharacter(character1Name, startX: 200, startY: 400);
             // Tạo nhân vật cho Player 2
-            Player2 = CharacterFactory.CreateCharacter(character2Name, startX: 600, startY: 400);
+            Player2 = CharacterFactory.CreateCharacter(character2Name, startX: 750, startY: 400);
         }
 
         public void Update()

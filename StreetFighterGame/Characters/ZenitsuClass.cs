@@ -57,7 +57,6 @@ namespace StreetFighterGame.Characters
         public override void SpecicalSkill()
         {
             Attack(ActionState.AttackingI);
-            TruMana(50);
             startDrawHitbox();
 
             HitboxPositionXLeft = PositionX - charWidth / 2 - CurrentHitboxImage.Width / 2;
@@ -81,17 +80,19 @@ namespace StreetFighterGame.Characters
             {
                 var frames = HitboxAnimations[ActionState.AttackingI];
                 base.currentHitboxFrame = (currentHitboxFrame + 1) % frames.Count;
+                TruMana(2);
 
                 HitboxPositionXLeft = PositionX - charWidth / 2 - CurrentHitboxImage.Width / 2;
                 HitboxPositionXRight = PositionX - frames[currentFrame].Width / 2 + charWidth / 2;
 
                 base.CurrentHitboxImage = frames[currentHitboxFrame];
 
-                if (base.currentHitboxFrame == base.lastFrameOfHitboxAnimation)
+                if (base.currentHitboxFrame == base.lastFrameOfHitboxAnimation || isHit)
                 {
                     currentHitboxFrame = 0;
                     lastFrameOfHitboxAnimation = 0;
                     HitboxFrameTimer.Stop();
+                    HitboxFrameTimer.Tick -= OnSpecicalSkillTick;
                 }
             }
         }
@@ -101,11 +102,12 @@ namespace StreetFighterGame.Characters
             {
                 var frames = Animations[CurrentState];
                 base.currentFrame = (base.currentFrame + 1) % frames.Count;
-                if (base.currentFrame == base.lastFrameOfAttackAnimation && base.currentHitboxFrame != base.lastFrameOfHitboxAnimation) base.currentFrame = 1;
+                
                 base.CurrentImage = frames[base.currentFrame];
+                if (base.currentFrame == base.lastFrameOfAttackAnimation && base.currentHitboxFrame != base.lastFrameOfHitboxAnimation) base.currentFrame = 0;
 
                 // Nếu là trạng thái tấn công, kiểm tra nếu đến frame cuối thì ngừng tấn công
-                if (IsAttackAction(CurrentState) && base.currentFrame == base.lastFrameOfAttackAnimation && base.currentHitboxFrame == base.lastFrameOfHitboxAnimation)
+                if (IsAttackAction(CurrentState) && base.currentFrame == base.lastFrameOfAttackAnimation && base.currentHitboxFrame == base.lastFrameOfHitboxAnimation || isHit)
                 {
                     isAttacking = triggerAttack = false;
                     CurrentHitboxImage = null;

@@ -34,7 +34,7 @@ namespace StreetFighterGame.Characters
                 { ActionState.AttackingJ, 9 },       // 3 khung hình cho AttackingJ
                 { ActionState.AttackingK, 7 },      // 17 khung hình cho AttackingK
                 { ActionState.AttackingL, 7 },       // 4 khung hình cho AttackingL
-                { ActionState.AttackingI, 4 },        // 4 khung hình cho AttackingI
+                { ActionState.AttackingI, 3 },        // 4 khung hình cho AttackingI
                 { ActionState.hit, 1 }
             });
 
@@ -48,14 +48,12 @@ namespace StreetFighterGame.Characters
 
             Name = "Vegeto";
             LoadAvatar(".\\Vegeto\\Vegeto_9000-4.png");
-            LoadHitSound(".\\sound\\PunchHit1.wav");
-            manaSkillI = 50;
+            manaSkillI = 22 * 4;
             
         }
         public override void SpecicalSkill()
         {
             Attack(ActionState.AttackingI);
-            TruMana(50);
             startDrawHitbox();
 
             HitboxPositionXLeft = PositionX - charWidth - CurrentHitboxImage.Width;
@@ -80,13 +78,14 @@ namespace StreetFighterGame.Characters
             {
                 var frames = HitboxAnimations[ActionState.AttackingI];
                 base.currentHitboxFrame = (currentHitboxFrame + 1) % frames.Count;
+                TruMana(4);
 
                 HitboxPositionXLeft = PositionX - charWidth - frames[currentHitboxFrame].Width;
                 HitboxPositionYRight = HitboxPositionYLeft = PositionY + (charHeight / 2 - frames[currentHitboxFrame].Height / 2);
                 
                 base.CurrentHitboxImage = frames[currentHitboxFrame];
 
-                if (base.currentHitboxFrame == base.lastFrameOfHitboxAnimation)
+                if (base.currentHitboxFrame == base.lastFrameOfHitboxAnimation || isHit)
                 {
                     currentHitboxFrame = 0;
                     lastFrameOfHitboxAnimation = 0;
@@ -101,11 +100,12 @@ namespace StreetFighterGame.Characters
             {
                 var frames = Animations[CurrentState];
                 base.currentFrame = (base.currentFrame + 1) % frames.Count;
-                if (base.currentFrame == base.lastFrameOfAttackAnimation && base.currentHitboxFrame != base.lastFrameOfHitboxAnimation) base.currentFrame = 1;
+                
                 base.CurrentImage = frames[base.currentFrame];
+                if (base.currentFrame == base.lastFrameOfAttackAnimation && base.currentHitboxFrame != base.lastFrameOfHitboxAnimation) base.currentFrame = 0;
 
                 // Nếu là trạng thái tấn công, kiểm tra nếu đến frame cuối thì ngừng tấn công
-                if (IsAttackAction(CurrentState) && base.currentFrame == base.lastFrameOfAttackAnimation && base.currentHitboxFrame == base.lastFrameOfHitboxAnimation)
+                if (IsAttackAction(CurrentState) && base.currentFrame == base.lastFrameOfAttackAnimation && base.currentHitboxFrame == base.lastFrameOfHitboxAnimation || isHit)
                 {
                     isAttacking = triggerAttack = false;
                     CurrentHitboxImage = null;

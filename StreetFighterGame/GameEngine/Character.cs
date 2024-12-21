@@ -43,6 +43,7 @@ namespace StreetFighterGame.GameEngine
     {
         public bool IsFacingLeft { get; set; }
         public bool IsMovingLeft { get; set; }
+        public bool stun {  get; set; }
         public string Name { get; set; }
         public float Energy { get; set; }
         public float Health { get; set; }
@@ -72,11 +73,11 @@ namespace StreetFighterGame.GameEngine
         public ActionState CurrentState { get; private set; } = ActionState.Standing;
 
         protected int currentFrame = 0;
-        protected int currentHitboxFrame = 0;
+        public int currentHitboxFrame = 0;
         private int frameDelay = 0;
       //  private int frameCounter = 0;
         protected int lastFrameOfAttackAnimation;
-        protected int lastFrameOfHitboxAnimation;
+        public int lastFrameOfHitboxAnimation;
         private float jumpSpeed = 0f;
         private const float Gravity = 16f;
        // private int DefendYOffset = 25;
@@ -91,23 +92,22 @@ namespace StreetFighterGame.GameEngine
         protected Timer HitboxFrameTimer;
 
         private Timer hitTimer;
-        private int hitDuration = 100;
+        private int hitDuration = 300;
 
         //private List<Hitbox> hitboxes = new List<Hitbox>();
 
-        //public string soundPath = ".\\sound\\PunchHit1.wav";
-        private SoundPlayer soundPlayer;
 
         
         protected Character(int startX, int startY, float scaleFactor, int mau, int d, int hitboxDurian = 100)
         {
+            isHit = true;
             PositionX = startX;
             BaseY = startY;
             PositionY = startY;
             ScaleFactor = scaleFactor;
             Animations = new Dictionary<ActionState, List<Image>>();
             HitboxAnimations = new Dictionary<ActionState, List<Image>>();
-            isAttacking = isJumpping = isDefense = triggerAttack = isHit = false;
+            isAttacking = isJumpping = isDefense = triggerAttack = false;
             CurrentHitboxImage = null;
             HitboxDurian = hitboxDurian;
 
@@ -125,23 +125,6 @@ namespace StreetFighterGame.GameEngine
             //LoadHitSound();
         }
         public abstract void SpecicalSkill();
-
-        public void LoadHitSound(string soundPath)
-        {
-            using (var audioFile = new AudioFileReader(soundPath))
-            using (var outputDevice = new WaveOutEvent())
-            {
-                outputDevice.Init(audioFile);
-                outputDevice.Play();
-
-                Console.WriteLine("Đang phát âm thanh... Nhấn Enter để dừng.");
-                Console.ReadLine(); // Đợi người dùng nhấn Enter để kết thúc
-            }
-        }
-        public void PlayHitSound()
-        {
-            soundPlayer?.Play(); // Phát âm thanh nếu đã nạp
-        }
         protected void OnFrameTimerTick(object sender, EventArgs e)
         {
             // Chỉ xử lý nếu trạng thái hiện tại có animation
@@ -232,6 +215,8 @@ namespace StreetFighterGame.GameEngine
         {
             charWidth = (int)(CurrentImage.Width * ScaleFactor);
             charHeight = (int)(CurrentImage.Height * ScaleFactor);
+            PositionX = Math.Min(PositionX, 1000);
+            PositionX = Math.Max(PositionX, IsFacingLeft ? charWidth : 0);
             rectangleEneme = eneme;
             if (isHit) return;
             if (isJumpping) HandleJumping();
@@ -255,7 +240,7 @@ namespace StreetFighterGame.GameEngine
 
             ChangeState(ActionState.hit); // Chuyển trạng thái sang Hit
 
-            // Bắt đầu đếm ngược 1 giây
+            // Bắt đầu đếm ngược thời gian bị đánh
             hitTimer.Start();
             isHit = true;
         }
@@ -449,7 +434,7 @@ namespace StreetFighterGame.GameEngine
         }
         public void TruMana(float mana)
         {
-            cssm.nangLuongHienTai -= mana;
+            cssm.nangLuongHienTai = Math.Max(cssm.nangLuongHienTai -= mana, 0);
         }
         public ActionState AttackType
         {

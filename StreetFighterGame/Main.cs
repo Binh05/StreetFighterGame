@@ -63,6 +63,8 @@ namespace StreetFighterGame
                 if (StartTimer == -1)
                 {
                     Lbstart.Visible = false;
+                    logicGame.Player1.isHit = false;
+                    logicGame.Player2.isHit = false;
                     CountdownTimer.Start();
                     CountdownStart.Stop();
                 }
@@ -112,6 +114,7 @@ namespace StreetFighterGame
             idChar1 = _idChar1;
             idChar2 = _idChar2;
             logicGame.InitializeCharacterSelection(player1Choice, player2Choice);
+            logicGame.Player2.IsFacingLeft = true;
             // Initialize Timer for game animation
             animationTimer = new Timer
             {
@@ -329,6 +332,7 @@ namespace StreetFighterGame
                     e.Graphics.ScaleTransform(-1, 1);
                     
                     e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.HitboxPositionXRight - character.PositionX, character.HitboxPositionYLeft, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
+                   
                     e.Graphics.TranslateTransform(character.PositionX, 0);
                     e.Graphics.ScaleTransform(-1, 1);
                 }
@@ -343,7 +347,7 @@ namespace StreetFighterGame
                 {
                     rectangleHitbox = new Rectangle(character.HitboxPositionXRight, character.HitboxPositionYRight, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height));
                     e.Graphics.DrawImage(character.CurrentHitboxImage, new Rectangle(character.HitboxPositionXRight, character.HitboxPositionYRight, (int)(character.CurrentHitboxImage.Width), (int)(character.CurrentHitboxImage.Height)));
-                    
+              
                 }
             }
 
